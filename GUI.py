@@ -1,17 +1,28 @@
 import tkinter as tk
 
 
-def new_window():
-    window.destroy()
-    window1 = tk.Tk()
-    window1.geometry("400x500")
-    window1.mainloop()
+def main_game_window():
+    start_window.destroy()
+    game_window = tk.Tk()
+    game_window.geometry("1000x600")
+    game_window.title("Zero Point One")
+    game_window.mainloop()
 
 
-window = tk.Tk()
-window.geometry("400x500")
-start = tk.Button(text="START", bg="red", height="5", width="10", command=new_window)
-Quit = tk.Button(window, text="QUIT", bg="blue", height="5", width="10", command=window.destroy)
+def settings_window():
+    settings = tk.Tk()
+    settings.geometry("500x300")
+    settings.title("settings")
+    settings.mainloop()
+
+
+start_window = tk.Tk()
+start_window.geometry("1000x600")
+start_window.title("MENU")
+start = tk.Button(start_window, text="START", bg="red", height="10", width="20", command=main_game_window)
+Quit = tk.Button(start_window, text="QUIT", bg="blue", height="10", width="20", command=start_window.destroy)
+setting = tk.Button(start_window,text="SETTINGS", bg="green", height="10", width="20", command=settings_window)
 start.pack()
+setting.pack()
 Quit.pack()
-window.mainloop()
+start_window.mainloop()
