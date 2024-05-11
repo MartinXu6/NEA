@@ -7,7 +7,10 @@ def main_game_window():
     game_window.iconbitmap("Images/game_icon.ico")
     game_window.geometry("1000x600")
     game_window.title("Zero Point One")
+    setting1 = tk.Button(game_window, text="SETTINGS", bg="green", height="10", width="20", command=settings_window)
+    setting1.pack()
     game_window.mainloop()
+
 
 
 def settings_window():
