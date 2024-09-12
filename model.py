@@ -30,7 +30,7 @@ class game:
                       Piece("blue", (0, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)),
                       Piece("blue", (1, 1), (-1, -1)), Piece("blue", (1, 1), (-1, -1)), Piece("blue", (1, 2), (-1, -1)),
                       Piece("blue", (0, 1), (-1, -1))]
-        self.deployed = False
+        self.deployed = True
 
     def is_move_legal(self, piece, end):
         if self.deployed:
@@ -44,19 +44,20 @@ class game:
         else:
             return False
 
-    def deployment(self, piece, end):
-        if not self.deployed:
-            if piece.side == "red":
-                self.reds.remove(piece)
-                if end[0] in [6, 7] and 0 <= end[1] <= 7:
-                    self.board[end[0]][end[1]] = piece
-                    piece.location = end
+    def deploy(self, piece, end):
+        if self.board[end[0]][end[1]] != 0:
+            if not self.deployed:
+                if piece.side == "red":
+                    self.reds.remove(piece)
+                    if end[0] in [6, 7] and 0 <= end[1] <= 7:
+                        self.board[end[0]][end[1]] = piece
+                        piece.location = end
 
-            elif piece.side == "blue":
-                self.blues.remove(piece)
-                if end[0] in [0, 1] and 0 <= end[1] <= 7:
-                    self.board[end[0]][end[1]] = piece
-                    piece.location = end
+                elif piece.side == "blue":
+                    self.blues.remove(piece)
+                    if end[0] in [0, 1] and 0 <= end[1] <= 7:
+                        self.board[end[0]][end[1]] = piece
+                        piece.location = end
 
     def move(self, piece, end):
         if self.is_move_legal(piece, end):
@@ -77,21 +78,37 @@ class game:
                          [0, 0, 0, 0, 0, 0, 0, 0],
                          [0, 0, 0, 0, 0, 0, 0, 0],
                          [0, 0, 0, 0, 0, 0, 0, 0], ]
-        start = piece.location
-        diagram_board[start[0]][start[1]] = 2
-        movables = []
-        for i in piece.type, piece.type[::-1]:
-            movables.append((start[0] + i[0], start[1] + i[1]))
-            movables.append((start[0] - i[0], start[1] - i[1]))
-            movables.append((start[0] + i[0], start[1] - i[1]))
-            movables.append((start[0] - i[0], start[1] + i[1]))
-        for move in movables:
-            if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
-                diagram_board[move[0]][move[1]] = 1
-        return diagram_board
+        if piece != 0:
+            start = piece.location
+            diagram_board[start[0]][start[1]] = 2
+            movables = []
+            for i in piece.type, piece.type[::-1]:
+                movables.append((start[0] + i[0], start[1] + i[1]))
+                movables.append((start[0] - i[0], start[1] - i[1]))
+                movables.append((start[0] + i[0], start[1] - i[1]))
+                movables.append((start[0] - i[0], start[1] + i[1]))
+            for move in movables:
+                if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+                    diagram_board[move[0]][move[1]] = 1
+            return diagram_board
 
 
 Game = game()
-Game.deployment(Game.reds[15], (6, 3))
-pprint.pprint(Game.board)
-pprint.pprint((Game.movable(Game.board[6][3])))
+# deployment cycles
+
+# reds deploying
+for r in range(16):
+    index = int(input(f"{[i.type for i in Game.reds]}"))
+    ending = input("Input the cords")
+    Game.deploy(Game.reds[index],(int(ending[0]), int(ending[1])))
+    current_board = Game.board
+    for i in range(8):
+        for j in range(8):
+            if current_board[i][j] != 0:
+                current_board[i][j] = current_board[i][j].type
+    pprint.pprint(Game.board)
+    pprint.pprint(current_board)
+print(Game.board)
+
+
+
