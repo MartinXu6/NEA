@@ -1,4 +1,5 @@
 import pprint
+import copy
 
 
 class Piece:
@@ -6,6 +7,24 @@ class Piece:
         self.side = side
         self.type = Type
         self.location = location
+
+    def movable(self, board):
+        start = self.location
+        all_moves = []
+        movables = []
+        for i in self.type, self.type[::-1]:
+            all_moves.append((start[0] + i[0], start[1] + i[1]))
+            all_moves.append((start[0] - i[0], start[1] - i[1]))
+            all_moves.append((start[0] + i[0], start[1] - i[1]))
+            all_moves.append((start[0] - i[0], start[1] + i[1]))
+        for move in all_moves:
+            if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
+                if board[move[0]][move[1]] != 0:
+                    if board[move[0]][move[1]].side != self.side:
+                        movables.append(move)
+            else:
+                movables.append(move)
+        return movables
 
 
 class game:
@@ -30,22 +49,24 @@ class game:
                       Piece("blue", (0, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)),
                       Piece("blue", (1, 1), (-1, -1)), Piece("blue", (1, 1), (-1, -1)), Piece("blue", (1, 2), (-1, -1)),
                       Piece("blue", (0, 1), (-1, -1))]
-        self.deployed = True
+        self.deployed = False
+        self.winner = None
 
     def is_move_legal(self, piece, end):
         if self.deployed:
-            start = piece.location
-            if 0 <= end[0] <= 7 and 0 <= end[1] <= 7:
-                if (abs(end[0] - start[0]), abs(end[1] - start[1])) in [piece.type, piece.type[::-1]]:
-                    if self.board[end[0]][end[1]].side == piece.side:
-                        return False
-                    else:
-                        return True
+            if end in piece.movable():
+                return True
+            else:
+                print("ilegal move!")
+                return False
         else:
             return False
 
+    def game_won(self, side):
+        print(f"{side} has won!")
+
     def deploy(self, piece, end):
-        if self.board[end[0]][end[1]] != 0:
+        if self.board[end[0]][end[1]] == 0:
             if not self.deployed:
                 if piece.side == "red":
                     self.reds.remove(piece)
@@ -59,56 +80,77 @@ class game:
                         self.board[end[0]][end[1]] = piece
                         piece.location = end
 
-    def move(self, piece, end):
-        if self.is_move_legal(piece, end):
-            start = piece.location
-            if self.board[end[0]][end[1]] != 0:
-                self.board[end[0]][end[1]].side = piece.side
-                self.board[end[0]][end[1]].location = (-1, -1)
-            self.board[start[0]][start[1]] = 0
-            self.board[end[0]][end[1]] = piece
-            piece.location = end
-
-    def movable(self, piece):
-        diagram_board = [[0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0], ]
+    def move(self, piece, end, side):
         if piece != 0:
-            start = piece.location
-            diagram_board[start[0]][start[1]] = 2
-            movables = []
-            for i in piece.type, piece.type[::-1]:
-                movables.append((start[0] + i[0], start[1] + i[1]))
-                movables.append((start[0] - i[0], start[1] - i[1]))
-                movables.append((start[0] + i[0], start[1] - i[1]))
-                movables.append((start[0] - i[0], start[1] + i[1]))
-            for move in movables:
-                if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
-                    diagram_board[move[0]][move[1]] = 1
-            return diagram_board
+            if piece.side == side:
+                if self.is_move_legal(piece, end):
+                    start = piece.location
+                    if self.board[end[0]][end[1]] != 0:
+                        captured_piece = self.board[end[0]][end[1]]
+                        if captured_piece.type == (0, 1):
+                            self.game_won(piece.side)
+                            self.winner = piece.side
+                        captured_piece.side = piece.side
+                        captured_piece.location = (-1, -1)
+                        if captured_piece.side == "reds":
+                            self.reds.append(captured_piece)
+                        else:
+                            self.blues.append(captured_piece)
+                    self.board[start[0]][start[1]] = 0
+                    self.board[end[0]][end[1]] = piece
+                    piece.location = end
 
 
 Game = game()
 # deployment cycles
 
 # reds deploying
-for r in range(16):
+while Game.reds:
     index = int(input(f"{[i.type for i in Game.reds]}"))
     ending = input("Input the cords")
-    Game.deploy(Game.reds[index],(int(ending[0]), int(ending[1])))
-    current_board = Game.board
+    Game.deploy(Game.reds[index], (int(ending[0]), int(ending[1])))
+    current_board = copy.deepcopy(Game.board)
     for i in range(8):
         for j in range(8):
             if current_board[i][j] != 0:
                 current_board[i][j] = current_board[i][j].type
-    pprint.pprint(Game.board)
     pprint.pprint(current_board)
-print(Game.board)
+# blues deploying
 
+while Game.blues:
+    index = int(input(f"{[i.type for i in Game.blues]}"))
+    ending = input("Input the cords")
+    Game.deploy(Game.blues[index], (int(ending[0]), int(ending[1])))
+    current_board = copy.deepcopy(Game.board)
+    for i in range(8):
+        for j in range(8):
+            if current_board[i][j] != 0:
+                current_board[i][j] = current_board[i][j].type
+    pprint.pprint(current_board)
+Game.deployed = True
 
+# game cycle
+
+while True:
+    # red move
+    s,e = input("Input the two cords for red move").split()
+    Game.move(Game.board[int(s[0])][int(s[1])],(int(e[0]), int(e[1])), "red")
+    current_board = copy.deepcopy(Game.board)
+    for i in range(8):
+        for j in range(8):
+            if current_board[i][j] != 0:
+                current_board[i][j] = current_board[i][j].type
+    pprint.pprint(current_board)
+    if Game.winner:
+        break
+    s,e = input("Input the two cords for blue move").split()
+    Game.move(Game.board[int(s[0])][int(s[1])], (int(e[0]), int(e[1])), "blue")
+    current_board = copy.deepcopy(Game.board)
+    for i in range(8):
+        for j in range(8):
+            if current_board[i][j] != 0:
+                current_board[i][j] = current_board[i][j].type
+    pprint.pprint(current_board)
+    if Game.winner:
+        break
 
