@@ -162,7 +162,7 @@ while True:
     pprint.pprint(current_board)
     if Game.winner:
         break
-    #blue move
+    # blue move
     s, e = input("Input the two cords for blue move").split()
     while True:
         if Game.is_move_legal(Game.board[int(s[0])][int(s[1])], (int(e[0]), int(e[1]))):
