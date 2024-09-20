@@ -42,8 +42,12 @@ bopo = ImageTk.PhotoImage(bopo)
 bopt = ImageTk.PhotoImage(bopt)
 
 
-def on_click(i, j, event):
+def board_on_click(i, j, event):
     print(i, j)
+
+
+def piece_on_click(i, j, event,side,index):
+    print(index)
 
 
 board = [[0, 0, 0, 0, 0, 0, 0, 0],
@@ -64,17 +68,73 @@ for i in range(8):
             square = Frame(main_board, height=55, width=55, bg="blue")
         else:
             square = Frame(main_board, height=55, width=55, bg="white")
-        square.bind("<Button-1>", lambda e, i=i, j=j: on_click(i, j, e))
+        square.bind("<Button-1>", lambda e, i=i, j=j: board_on_click(i, j, e))
         square.grid(row=i, column=j, padx=1, pady=1)
-red_pieces = Frame(root, bg="red", width=500, height=100, )
+red_pieces = Frame(root, bg="yellow", width=470, height=110, )
 red_pieces.place(relx=0.5, y=650, anchor="center")
-blue_pieces = Frame(root, bg="blue", width=500, height=100, )
+blue_pieces = Frame(root, bg="yellow", width=470, height=110, )
 blue_pieces.place(relx=0.5, y=50, anchor="center")
+rtptl1, rtptl2, rtptl3, rtptl4, rtptl5, rtptl6, rtptl7, rtptl8, rzptl1, rzptl2, rzptl3, rzptl4, ropol1, ropol2, roptl, rzpol = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+red = [rtptl1, rtptl2, rtptl3, rtptl4, rtptl5, rtptl6, rtptl7, rtptl8, rzptl1, rzptl2, rzptl3, rzptl4, ropol1, ropol2,
+       roptl, rzpol]
 
-rtptl = Label(red_pieces, image=rtpt)
-rtptl.place(x=7,y=7)
-# rtptl.grid(row=0,column=0,padx=1,pady=1)
-# bzpol= Label(blue_pieces, image=bzpo)
+counter = 0
+for i in range(8):
+    red[i] = Label(red_pieces, image=rtpt, bg="yellow")
+    red[i].bind("<Button-1>", lambda e, i=-1, j=-1,index = i ,s ="red": piece_on_click(i, j, e, s,index))
+    red[i].place(relx=0.126 * counter)
+    counter += 1
+counter = 0
+for i in range(8, 12):
+    red[i] = Label(red_pieces, image=rzpt, bg="yellow")
+    red[i].bind("<Button-1>", lambda e, i=-1, j=-1, index = i, s="red": piece_on_click(i, j, e, s,index))
+    red[i].place(relx=0.126 * counter, y=55)
+    counter += 1
+counter = 0
+for i in range(12, 14):
+    red[i] = Label(red_pieces, image=ropo, bg="yellow")
+    red[i].bind("<Button-1>", lambda e, i=-1, j=-1, index = i, s="red": piece_on_click(i, j, e, s,index))
+    red[i].place(relx=4 * 0.126 + 0.126 * counter, y=55)
+    counter += 1
+red[14] = Label(red_pieces, image=ropt, bg="yellow")
+red[14].bind("<Button-1>", lambda e, i=-1, j=-1, index = 14,s ="red": piece_on_click(i, j, e, s,index))
+red[14].place(relx=6 * 0.126, y=55)
+red[15] = Label(red_pieces, image=rzpo, bg="yellow")
+red[15].bind("<Button-1>", lambda e, i=-1, j=-1, index =15,s ="red": piece_on_click(i, j, e, s,index))
+red[15].place(relx=7 * 0.126, y=55)
 
-# bzpol.pack()
+btptl1, btptl2, btptl3, btptl4, btptl5, btptl6, btptl7, btptl8, bzptl1, bzptl2, bzptl3, bzptl4, bopol1, bopol2, boptl, bzpol = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+blue = [btptl1, btptl2, btptl3, btptl4, btptl5, btptl6, btptl7, btptl8, bzptl1, bzptl2, bzptl3, bzptl4, bopol1, bopol2,
+        boptl, bzpol]
+counter = 0
+for i in range(8):
+    blue[i] = Label(blue_pieces, image=btpt, bg="yellow")
+    blue[i].bind("<Button-1>", lambda e, i=-1, j=-1, index = i,s="blue": piece_on_click(i, j, e, s,index))
+    blue[i].place(relx=0.126 * counter)
+    counter += 1
+counter = 0
+for i in range(8, 12):
+    blue[i] = Label(blue_pieces, image=bzpt, bg="yellow")
+    blue[i].bind("<Button-1>", lambda e, i=-1, j=-1, index = i, s="blue": piece_on_click(i, j, e, s,index))
+    blue[i].place(relx=0.126 * counter, y=55)
+    counter += 1
+counter = 0
+for i in range(12, 14):
+    blue[i] = Label(blue_pieces, image=bopo, bg="yellow")
+    blue[i].bind("<Button-1>", lambda e, i=-1, j=-1,index =i, s="blue": piece_on_click(i, j, e, s,index))
+    blue[i].place(relx=4 * 0.126 + 0.126 * counter, y=55)
+    counter += 1
+blue[14] = Label(blue_pieces, image=bopt, bg="yellow")
+blue[14].bind("<Button-1>", lambda e, i=-1, j=-1, index =14, s="blue": piece_on_click(i, j, e, s,index))
+blue[14].place(relx=6 * 0.126, y=55)
+blue[15] = Label(blue_pieces, image=bzpo, bg="yellow")
+blue[15].bind("<Button-1>", lambda e, i=-1, j=-1,index = 15, s="blue": piece_on_click(i, j, e, s,index))
+blue[15].place(relx=7 * 0.126, y=55)
+
+blue[15] = Label(main_board, image=bzpo, bg="yellow")
+blue[15].bind("<Button-1>", lambda e, i=-1, j=-1,index = 15, s="blue": piece_on_click(i, j, e, s,index))
+blue[15].place(relx=0 * 0.126, y=0)
+
 root.mainloop()
