@@ -17,15 +17,17 @@ class GUI:
         self.destination = (-1, -1)
 
     def board_on_click(self, i, j, event):
-        if self.clicked_piece != (-1,-1):
+        if self.clicked_piece != (-1, -1):
             self.destination = (i, j)
+            # self.red[self.clicked_piece[1]].place(relx=self.destination[0] * 0.126, y=self.destination[1] * 55)
+            # self.red[self.clicked_piece[1]].destroy()
 
     def piece_on_click(self, i, j, event, side, index):
         if side == "red":
-            self.red[index].config(bg = "white")
-            self.clicked_piece = ("red",index)
+            self.red[index].config(bg="white")
+            self.clicked_piece = ("red", index)
         else:
-            self.clicked_piece = ("blue",index)
+            self.clicked_piece = ("blue", index)
 
     def initialise_GUI(self):
         rtpt = Image.open("Images/Pieces/r2.2.png")
@@ -80,26 +82,30 @@ class GUI:
         self.blue_pieces.place(relx=0.5, y=50, anchor="center")
         rtptl1, rtptl2, rtptl3, rtptl4, rtptl5, rtptl6, rtptl7, rtptl8, rzptl1, rzptl2, rzptl3, rzptl4, ropol1, ropol2, roptl, rzpol = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        self.red = [rtptl1, rtptl2, rtptl3, rtptl4, rtptl5, rtptl6, rtptl7, rtptl8, rzptl1, rzptl2, rzptl3, rzptl4, ropol1,
-               ropol2,
-               roptl, rzpol]
+        self.red = [rtptl1, rtptl2, rtptl3, rtptl4, rtptl5, rtptl6, rtptl7, rtptl8, rzptl1, rzptl2, rzptl3, rzptl4,
+                    ropol1,
+                    ropol2,
+                    roptl, rzpol]
 
         counter = 0
         for i in range(8):
             self.red[i] = Label(self.red_pieces, image=rtpt, bg="yellow")
-            self.red[i].bind("<Button-1>", lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
+            self.red[i].bind("<Button-1>",
+                             lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
             self.red[i].place(relx=0.126 * counter)
             counter += 1
         counter = 0
         for i in range(8, 12):
             self.red[i] = Label(self.red_pieces, image=rzpt, bg="yellow")
-            self.red[i].bind("<Button-1>", lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
+            self.red[i].bind("<Button-1>",
+                             lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
             self.red[i].place(relx=0.126 * counter, y=55)
             counter += 1
         counter = 0
         for i in range(12, 14):
             self.red[i] = Label(self.red_pieces, image=ropo, bg="yellow")
-            self.red[i].bind("<Button-1>", lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
+            self.red[i].bind("<Button-1>",
+                             lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
             self.red[i].place(relx=4 * 0.126 + 0.126 * counter, y=55)
             counter += 1
         self.red[14] = Label(self.red_pieces, image=ropt, bg="yellow")
@@ -111,42 +117,48 @@ class GUI:
 
         btptl1, btptl2, btptl3, btptl4, btptl5, btptl6, btptl7, btptl8, bzptl1, bzptl2, bzptl3, bzptl4, bopol1, bopol2, boptl, bzpol = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        self.blue = [btptl1, btptl2, btptl3, btptl4, btptl5, btptl6, btptl7, btptl8, bzptl1, bzptl2, bzptl3, bzptl4, bopol1,
-                bopol2,
-                boptl, bzpol]
+        self.blue = [btptl1, btptl2, btptl3, btptl4, btptl5, btptl6, btptl7, btptl8, bzptl1, bzptl2, bzptl3, bzptl4,
+                     bopol1,
+                     bopol2,
+                     boptl, bzpol]
         counter = 0
         for i in range(8):
             self.blue[i] = Label(self.blue_pieces, image=btpt, bg="yellow")
-            self.blue[i].bind("<Button-1>", lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
+            self.blue[i].bind("<Button-1>",
+                              lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
             self.blue[i].place(relx=0.126 * counter)
             counter += 1
         counter = 0
         for i in range(8, 12):
             self.blue[i] = Label(self.blue_pieces, image=bzpt, bg="yellow")
-            self.blue[i].bind("<Button-1>", lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
+            self.blue[i].bind("<Button-1>",
+                              lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
             self.blue[i].place(relx=0.126 * counter, y=55)
             counter += 1
         counter = 0
         for i in range(12, 14):
             self.blue[i] = Label(self.blue_pieces, image=bopo, bg="yellow")
-            self.blue[i].bind("<Button-1>", lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
+            self.blue[i].bind("<Button-1>",
+                              lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
             self.blue[i].place(relx=4 * 0.126 + 0.126 * counter, y=55)
             counter += 1
         self.blue[14] = Label(self.blue_pieces, image=bopt, bg="yellow")
-        self.blue[14].bind("<Button-1>", lambda e, i=-1, j=-1, index=14, s="blue": self.piece_on_click(i, j, e, s, index))
+        self.blue[14].bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=14, s="blue": self.piece_on_click(i, j, e, s, index))
         self.blue[14].place(relx=6 * 0.126, y=55)
         self.blue[15] = Label(self.blue_pieces, image=bzpo, bg="yellow")
-        self.blue[15].bind("<Button-1>", lambda e, i=-1, j=-1, index=15, s="blue": self.piece_on_click(i, j, e, s, index))
+        self.blue[15].bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=15, s="blue": self.piece_on_click(i, j, e, s, index))
         self.blue[15].place(relx=7 * 0.126, y=55)
 
-        # blue[15].destroy()
+        # self.blue[15].destroy()
         # blue[15] = Label(main_board, image=bzpo, bg="yellow")
         # blue[15].bind("<Button-1>", lambda e, i=-1, j=-1,index = 15, s="blue": piece_on_click(i, j, e, s,index))
         # blue[15].place(relx=0 * 0.126, y=0)
-        self.root.mainloop()
 
     def make_move(self, side, piece, end):
         if side == "red":
+            print("hi")
             self.red[piece].destroy()
             self.red_locations[piece] = end
         else:

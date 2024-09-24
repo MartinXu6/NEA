@@ -2,16 +2,20 @@ import View
 import model
 import pprint
 import copy
+from tkinter import *
 
 gui = View.GUI()
 gui.initialise_GUI()
 Game = model.game()
+num = 1
 
-while True:
-    if gui.destination != (-1,-1) and gui.clicked_piece != (-1,-1):
+
+while num != 0:
+    gui.root.update()
+    if gui.destination != (-1, -1) and gui.clicked_piece != (-1, -1):
         gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
-        gui.destination = (-1,-1)
-        gui.clicked_piece = (-1,-1)
+        gui.destination = (-1, -1)
+        gui.clicked_piece = (-1, -1)
 
 # deployment cycles
 
@@ -75,5 +79,3 @@ while True:
 #     pprint.pprint(current_board)
 #     if Game.winner:
 #         break
-
-
