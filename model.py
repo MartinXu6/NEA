@@ -78,6 +78,7 @@ class game:
         print(f"{side} has won!")
 
     def deploy(self, piece, end):
+        moved = False
         if self.board[end[0]][end[1]] == 0:
             if not self.deployed:
                 if piece.side == "red":
@@ -85,12 +86,15 @@ class game:
                     if end[0] in [6, 7] and 0 <= end[1] <= 7:
                         self.board[end[0]][end[1]] = piece
                         piece.location = end
+                        moved = True
 
                 elif piece.side == "blue":
                     self.blues.remove(piece)
                     if end[0] in [0, 1] and 0 <= end[1] <= 7:
                         self.board[end[0]][end[1]] = piece
                         piece.location = end
+                        moved = True
+        return moved
 
     def move(self, piece, end, side):
         if piece != 0:

@@ -12,19 +12,20 @@ num = 1
 colours = ["red","blue","green","white"]
 
 while True:
-    gui.root.wm_attributes("-transparentcolor", colours[randint(0,3)])
-    gui.root.update()
-    if gui.destination != (-1, -1) and gui.clicked_piece != (-1, -1):
-        gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
-        gui.destination = (-1, -1)
-        gui.clicked_piece = (-1, -1)
+    # gui.root.wm_attributes("-transparentcolor", colours[randint(0,3)])
+    # gui.root.update()
+    while Game.reds:
+        gui.root.update()
+        if Game.deploy(Game.reds[gui.clicked_piece[1]], gui.destination[0], gui.destination[1]):
+            if gui.destination != (-1, -1) and gui.clicked_piece != (-1, -1):
+                gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
+                gui.destination = (-1, -1)
+                gui.clicked_piece = (-1, -1)
 
 # deployment cycles
 
 # reds deploying
 # while Game.reds:
-#     index = int(input(f"{[i.type for i in Game.reds]}"))
-#     ending = input("Input the cords")
 #     Game.deploy(Game.reds[index], (int(ending[0]), int(ending[1])))
 #     current_board = copy.deepcopy(Game.board)
 #     for i in range(8):
