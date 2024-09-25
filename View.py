@@ -16,7 +16,7 @@ class GUI:
         self.clicked_piece = (-1, -1)
         self.destination = (-1, -1)
         self.piece_size = (45,45)
-        self.piece_colour = "yellow"
+        self.piece_colour = "white"
         self.rtpt = Image.open("Images/Pieces/r2.2.png")
         self.rtpt = self.rtpt.resize(self.piece_size)
         self.rzpo = Image.open("Images/Pieces/r0.1.png")
@@ -39,7 +39,6 @@ class GUI:
         self.bopo = self.bopo.resize(self.piece_size)
 
     def board_on_click(self, i, j, event):
-        print(i, j)
         if self.clicked_piece != (-1, -1):
             self.destination = (i, j)
             # self.red[self.clicked_piece[1]].place(relx=self.destination[0] * 0.126, y=self.destination[1] * 55)
@@ -47,11 +46,19 @@ class GUI:
 
     def piece_on_click(self, i, j, event, side, index):
         if side == "red":
-            self.red[index].config(bg="black")
-            self.clicked_piece = ("red", index)
+            if self.clicked_piece == (-1,-1):
+                self.red[index].config(bg="black")
+                self.clicked_piece = ("red", index)
+            else:
+                self.red[self.clicked_piece[1]].config(bg="white")
+                self.clicked_piece = (-1, -1)
         else:
-            self.blue[index].config(bg="black")
-            self.clicked_piece = ("blue", index)
+            if self.clicked_piece == (-1,-1):
+                self.blue[index].config(bg="black")
+                self.clicked_piece = ("blue", index)
+            else:
+                self.blue[self.clicked_piece[1]].config(bg="white")
+                self.clicked_piece = (-1, -1)
 
     def initialise_GUI(self):
 

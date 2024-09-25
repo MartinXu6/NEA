@@ -8,20 +8,26 @@ from random import randint
 gui = View.GUI()
 gui.initialise_GUI()
 Game = model.game()
-num = 1
 colours = ["red","blue","green","white"]
 
-while True:
     # gui.root.wm_attributes("-transparentcolor", colours[randint(0,3)])
     # gui.root.update()
-    while Game.reds:
+while True:
+    while True:
         gui.root.update()
-        if Game.deploy(Game.reds[gui.clicked_piece[1]], gui.destination[0], gui.destination[1]):
-            if gui.destination != (-1, -1) and gui.clicked_piece != (-1, -1):
-                gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
-                gui.destination = (-1, -1)
-                gui.clicked_piece = (-1, -1)
-
+        if gui.clicked_piece != (-1,-1) and gui.destination != (-1,-1):
+            if Game.deploy(Game.reds[gui.clicked_piece[1]], gui.destination):
+                    gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
+                    gui.destination = (-1, -1)
+                    gui.clicked_piece = (-1, -1)
+            else:
+                    gui.red[gui.clicked_piece[1]].config(bg="white")
+                    gui.clicked_piece = (-1,-1)
+                    gui.destination = (-1, -1)
+        if Game.deployed_reds == 16:
+            break
+    while True:
+        gui.root.update()
 # deployment cycles
 
 # reds deploying

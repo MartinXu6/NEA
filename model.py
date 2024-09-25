@@ -60,6 +60,8 @@ class game:
                       Piece("blue", (0, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)),
                       Piece("blue", (1, 1), (-1, -1)), Piece("blue", (1, 1), (-1, -1)), Piece("blue", (1, 2), (-1, -1)),
                       Piece("blue", (0, 1), (-1, -1))]
+        self.deployed_reds = 0
+        self.deployed_blues = 0
         # self.reds = []
         # self.blues = []
         self.deployed = False
@@ -82,8 +84,8 @@ class game:
         if self.board[end[0]][end[1]] == 0:
             if not self.deployed:
                 if piece.side == "red":
-                    self.reds.remove(piece)
                     if end[0] in [6, 7] and 0 <= end[1] <= 7:
+                        self.deployed_reds += 1
                         self.board[end[0]][end[1]] = piece
                         piece.location = end
                         moved = True
