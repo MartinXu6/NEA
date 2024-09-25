@@ -11,8 +11,8 @@ Game = model.game()
 num = 1
 colours = ["red","blue","green","white"]
 
-while num != 0:
-    # gui.root.wm_attributes("-transparentcolor", colours[randint(0,3)])
+while True:
+    gui.root.wm_attributes("-transparentcolor", colours[randint(0,3)])
     gui.root.update()
     if gui.destination != (-1, -1) and gui.clicked_piece != (-1, -1):
         gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)

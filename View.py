@@ -50,6 +50,7 @@ class GUI:
             self.red[index].config(bg="black")
             self.clicked_piece = ("red", index)
         else:
+            self.blue[index].config(bg="black")
             self.clicked_piece = ("blue", index)
 
     def initialise_GUI(self):
@@ -171,5 +172,12 @@ class GUI:
             self.red[piece].place(relx = 0.127*end[1], rely = 0.126*end[0])
             self.red_locations[piece] = end
         else:
+            previous_image = self.blue[piece].cget("image")
             self.blue[piece].destroy()
+            self.blue.pop(piece)
+            new_piece = Label(self.main_board, image=previous_image, bg="white")
+            new_piece.bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=piece, s="blue": self.piece_on_click(i, j, e, s, index))
+            self.blue.insert(piece, new_piece)
+            self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.blue_locations[piece] = end
