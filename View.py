@@ -47,18 +47,24 @@ class GUI:
     def piece_on_click(self, i, j, event, side, index):
         if side == "red":
             if self.clicked_piece == (-1,-1):
-                self.red[index].config(bg="black")
                 self.clicked_piece = ("red", index)
             else:
-                self.red[self.clicked_piece[1]].config(bg="white")
-                self.clicked_piece = (-1, -1)
+                if self.clicked_piece[0] == "red":
+                    self.red[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1)
+                else:
+                    self.blue[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1)
         else:
             if self.clicked_piece == (-1,-1):
-                self.blue[index].config(bg="black")
                 self.clicked_piece = ("blue", index)
             else:
-                self.blue[self.clicked_piece[1]].config(bg="white")
-                self.clicked_piece = (-1, -1)
+                if self.clicked_piece[0] == "blue":
+                    self.blue[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1)
+                else:
+                    self.red[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1)
 
     def initialise_GUI(self):
 
