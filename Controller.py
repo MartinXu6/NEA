@@ -8,35 +8,67 @@ from random import randint
 gui = View.GUI()
 gui.initialise_GUI()
 Game = model.game()
-colours = ["red","blue","green","white"]
+colours = ["red", "blue", "green", "white"]
 
-    # gui.root.wm_attributes("-transparentcolor", colours[randint(0,3)])
-    # gui.root.update()
+# gui.root.wm_attributes("-transparentcolor", colours[randint(0,3)])
+# gui.root.update()
 while True:
     # red deployment cycle
     red_deployed_index = []
+    red_deployable = [(6,0),(6,1),(6,2),(6,3),(6,4),(6,5),(6,6),(6,7),
+                      (7,0),(7,1),(7,2),(7,3),(7,4),(7,5),(7,6),(7,7)]
+    blue_deployed_index = []
+    blue_deployable = [(0,0),(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),
+                      (1,0),(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7)]
     while True:
         gui.root.update()
-        if gui.clicked_piece != (-1,-1):
+        if gui.clicked_piece != (-1, -1):
             if gui.clicked_piece[0] == "red" and gui.clicked_piece[1] not in red_deployed_index:
                 gui.red[gui.clicked_piece[1]].config(bg="black")
-                if gui.destination != (-1,-1):
+                gui.display_movable(red_deployable)
+                if gui.destination != (-1, -1):
                     if Game.deploy(Game.reds[gui.clicked_piece[1]], gui.destination):
-                            gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
-                            red_deployed_index.append(gui.clicked_piece[1])
-                            gui.destination = (-1, -1)
-                            gui.clicked_piece = (-1, -1)
+                        for i in gui.displayed_pieces:
+                            i.destroy()
+                            gui.displayed_pieces =[]
+                        gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
+                        red_deployed_index.append(gui.clicked_piece[1])
+                        red_deployable.remove(gui.destination)
+                        gui.destination = (-1, -1)
+                        gui.clicked_piece = (-1, -1)
                     else:
-                            gui.red[gui.clicked_piece[1]].config(bg="white")
-                            gui.clicked_piece = (-1,-1)
-                            gui.destination = (-1, -1)
+                        gui.red[gui.clicked_piece[1]].config(bg="white")
+                        gui.clicked_piece = (-1, -1)
+                        gui.destination = (-1, -1)
             else:
-                gui.clicked_piece = (-1,-1)
+                gui.clicked_piece = (-1, -1)
         if len(red_deployed_index) == 16:
             break
     # blue deployment cycle
     while True:
         gui.root.update()
+        if gui.clicked_piece != (-1, -1):
+            if gui.clicked_piece[0] == "blue" and gui.clicked_piece[1] not in blue_deployed_index:
+                gui.blue[gui.clicked_piece[1]].config(bg="black")
+                gui.display_movable(blue_deployable)
+                if gui.destination != (-1, -1):
+                    if Game.deploy(Game.blues[gui.clicked_piece[1]], gui.destination):
+                        for i in gui.displayed_pieces:
+                            i.destroy()
+                            gui.displayed_pieces = []
+                        gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
+                        blue_deployed_index.append(gui.clicked_piece[1])
+                        blue_deployable.remove(gui.destination)
+                        gui.destination = (-1, -1)
+                        gui.clicked_piece = (-1, -1)
+                    else:
+                        gui.blue[gui.clicked_piece[1]].config(bg="white")
+                        gui.clicked_piece = (-1, -1)
+                        gui.destination = (-1, -1)
+            else:
+                gui.clicked_piece = (-1, -1)
+        if len(blue_deployed_index) == 16:
+            break
 # deployment cycles
 
 # reds deploying

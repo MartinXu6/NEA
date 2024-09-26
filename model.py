@@ -91,8 +91,8 @@ class game:
                         moved = True
 
                 elif piece.side == "blue":
-                    self.blues.remove(piece)
                     if end[0] in [0, 1] and 0 <= end[1] <= 7:
+                        self.deployed_blues += 1
                         self.board[end[0]][end[1]] = piece
                         piece.location = end
                         moved = True

@@ -9,13 +9,14 @@ class GUI:
         self.main_board = Frame(self.root, bg="black", bd=0, width=440, height=440)
         self.red_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
         self.blue_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
+        self.displayed_pieces = []
         self.red = []
         self.blue = []
         self.red_locations = [(-1, -1)] * 16
         self.blue_locations = [(-1, -1)] * 16
         self.clicked_piece = (-1, -1)
         self.destination = (-1, -1)
-        self.piece_size = (45,45)
+        self.piece_size = (45, 45)
         self.piece_colour = "white"
         self.rtpt = Image.open("Images/Pieces/r2.2.png")
         self.rtpt = self.rtpt.resize(self.piece_size)
@@ -46,7 +47,7 @@ class GUI:
 
     def piece_on_click(self, i, j, event, side, index):
         if side == "red":
-            if self.clicked_piece == (-1,-1):
+            if self.clicked_piece == (-1, -1):
                 self.clicked_piece = ("red", index)
             else:
                 if self.clicked_piece[0] == "red":
@@ -56,7 +57,7 @@ class GUI:
                     self.blue[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
         else:
-            if self.clicked_piece == (-1,-1):
+            if self.clicked_piece == (-1, -1):
                 self.clicked_piece = ("blue", index)
             else:
                 if self.clicked_piece[0] == "blue":
@@ -180,9 +181,9 @@ class GUI:
             self.red.pop(piece)
             new_piece = Label(self.main_board, image=previous_image, bg="white")
             new_piece.bind("<Button-1>",
-                              lambda e, i=-1, j=-1, index = piece, s="red": self.piece_on_click(i, j, e, s, index))
-            self.red.insert(piece,new_piece)
-            self.red[piece].place(relx = 0.127*end[1], rely = 0.126*end[0])
+                           lambda e, i=-1, j=-1, index=piece, s="red": self.piece_on_click(i, j, e, s, index))
+            self.red.insert(piece, new_piece)
+            self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.red_locations[piece] = end
         else:
             previous_image = self.blue[piece].cget("image")
@@ -194,3 +195,11 @@ class GUI:
             self.blue.insert(piece, new_piece)
             self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.blue_locations[piece] = end
+
+    def display_movable(self, movable):
+        for place in movable:
+            new_label = Label(self.main_board, bg="yellow", height=1, width=1)
+            new_label.bind("<Button-1>", lambda e, i=place[0], j=place[1]: self.board_on_click(i, j, e))
+            new_label.place(relx=0.14 * place[1], rely=0.130 * place[0],)
+            self.displayed_pieces.append(new_label)
+        return
