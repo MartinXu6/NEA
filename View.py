@@ -53,9 +53,15 @@ class GUI:
                 if self.clicked_piece[0] == "red":
                     self.red[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
+                    for i in self.displayed_pieces:
+                        i.destroy()
+                        self.displayed_pieces = []
                 else:
                     self.blue[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
+                    for i in self.displayed_pieces:
+                        i.destroy()
+                        self.displayed_pieces = []
         else:
             if self.clicked_piece == (-1, -1):
                 self.clicked_piece = ("blue", index)
@@ -63,9 +69,15 @@ class GUI:
                 if self.clicked_piece[0] == "blue":
                     self.blue[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
+                    for i in self.displayed_pieces:
+                        i.destroy()
+                        self.displayed_pieces = []
                 else:
                     self.red[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
+                    for i in self.displayed_pieces:
+                        i.destroy()
+                        self.displayed_pieces = []
 
     def initialise_GUI(self):
 

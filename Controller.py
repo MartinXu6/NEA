@@ -38,6 +38,9 @@ while True:
                         gui.clicked_piece = (-1, -1)
                     else:
                         gui.red[gui.clicked_piece[1]].config(bg="white")
+                        for i in gui.displayed_pieces:
+                            i.destroy()
+                            gui.displayed_pieces = []
                         gui.clicked_piece = (-1, -1)
                         gui.destination = (-1, -1)
             else:
@@ -63,6 +66,9 @@ while True:
                         gui.clicked_piece = (-1, -1)
                     else:
                         gui.blue[gui.clicked_piece[1]].config(bg="white")
+                        for i in gui.displayed_pieces:
+                            i.destroy()
+                            gui.displayed_pieces = []
                         gui.clicked_piece = (-1, -1)
                         gui.destination = (-1, -1)
             else:
