@@ -75,33 +75,43 @@ while True:
                 gui.clicked_piece = (-1, -1)
         if len(blue_deployed_index) == 16:
             break
-# deployment cycles
 
-# reds deploying
-# while Game.reds:
-#     Game.deploy(Game.reds[index], (int(ending[0]), int(ending[1])))
-#     current_board = copy.deepcopy(Game.board)
-#     for i in range(8):
-#         for j in range(8):
-#             if current_board[i][j] != 0:
-#                 current_board[i][j] = current_board[i][j].type
-#     pprint.pprint(current_board)
-# # blues deploying
-#
-# while Game.blues:
-#     index = int(input(f"{[i.type for i in Game.blues]}"))
-#     ending = input("Input the cords")
-#     Game.deploy(Game.blues[index], (int(ending[0]), int(ending[1])))
-#     current_board = copy.deepcopy(Game.board)
-#     for i in range(8):
-#         for j in range(8):
-#             if current_board[i][j] != 0:
-#                 current_board[i][j] = current_board[i][j].type
-#     pprint.pprint(current_board)
-# Game.deployed = True
-#
-# # game cycle
-#
+    Game.deployed = True
+    while True:
+        # red deployment cycle
+        while True:
+            gui.root.update()
+            if gui.clicked_piece != (-1,-1):
+                if gui.clicked_piece[0] == "red":
+                    gui.red[gui.clicked_piece[1]].config(bg="black")
+                    red_movable = Game.reds[gui.clicked_piece[1]].movable(Game.board)
+                    gui.display_movable(red_movable)
+                    if gui.destination != (-1, -1):
+                        if Game.move(Game.reds[gui.clicked_piece[1]], gui.destination,"red"):
+                            for i in gui.displayed_pieces:
+                                i.destroy()
+                                gui.displayed_pieces = []
+                            gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
+                            gui.destination = (-1, -1)
+                            gui.clicked_piece = (-1, -1)
+                            break
+                        else:
+                            gui.red[gui.clicked_piece[1]].config(bg="white")
+                            for i in gui.displayed_pieces:
+                                i.destroy()
+                                gui.displayed_pieces = []
+                            gui.clicked_piece = (-1, -1)
+                            gui.destination = (-1, -1)
+                else:
+                    gui.clicked_piece = (-1, -1)
+
+        # bue deployment cycle
+        while True:
+            gui.root.update()
+
+
+
+
 # while True:
 #     # red move
 #     s, e = input("Input the two cords for red move").split()
@@ -135,3 +145,28 @@ while True:
 #     pprint.pprint(current_board)
 #     if Game.winner:
 #         break
+# deployment cycles
+
+# reds deploying
+# while Game.reds:
+#     Game.deploy(Game.reds[index], (int(ending[0]), int(ending[1])))
+#     current_board = copy.deepcopy(Game.board)
+#     for i in range(8):
+#         for j in range(8):
+#             if current_board[i][j] != 0:
+#                 current_board[i][j] = current_board[i][j].type
+#     pprint.pprint(current_board)
+# # blues deploying
+#
+# while Game.blues:
+#     index = int(input(f"{[i.type for i in Game.blues]}"))
+#     ending = input("Input the cords")
+#     Game.deploy(Game.blues[index], (int(ending[0]), int(ending[1])))
+#     current_board = copy.deepcopy(Game.board)
+#     for i in range(8):
+#         for j in range(8):
+#             if current_board[i][j] != 0:
+#                 current_board[i][j] = current_board[i][j].type
+#     pprint.pprint(current_board)
+# Game.deployed = True
+

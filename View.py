@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import Image
 from PIL import ImageTk
+import model
 
 
 class GUI:
@@ -14,6 +15,9 @@ class GUI:
         self.blue = []
         self.red_locations = [(-1, -1)] * 16
         self.blue_locations = [(-1, -1)] * 16
+        self.capturing = (-1, -1)
+        self.captured = (-1, -1)
+
         self.clicked_piece = (-1, -1)
         self.destination = (-1, -1)
         self.piece_size = (45, 45)
@@ -57,6 +61,8 @@ class GUI:
                         i.destroy()
                         self.displayed_pieces = []
                 else:
+                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
+                    self.captured = (self.side, self.index)
                     self.blue[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
                     for i in self.displayed_pieces:
@@ -73,6 +79,8 @@ class GUI:
                         i.destroy()
                         self.displayed_pieces = []
                 else:
+                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
+                    self.captured = (self.side, self.index)
                     self.red[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
                     for i in self.displayed_pieces:
@@ -208,10 +216,32 @@ class GUI:
             self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.blue_locations[piece] = end
 
+    def make_move(self, side, piece, end):
+        if side == "red":
+            previous_image = self.red[piece].cget("image")
+            self.red[piece].destroy()
+            self.red.pop(piece)
+            new_piece = Label(self.main_board, image=previous_image, bg="white")
+            new_piece.bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=piece, s="red": self.piece_on_click(i, j, e, s, index))
+            self.red.insert(piece, new_piece)
+            self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+            self.red_locations[piece] = end
+        else:
+            previous_image = self.blue[piece].cget("image")
+            self.blue[piece].destroy()
+            self.blue.pop(piece)
+            new_piece = Label(self.main_board, image=previous_image, bg="white")
+            new_piece.bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=piece, s="blue": self.piece_on_click(i, j, e, s, index))
+            self.blue.insert(piece, new_piece)
+            self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+            self.blue_locations[piece] = end
+
     def display_movable(self, movable):
         for place in movable:
             new_label = Label(self.main_board, bg="yellow", height=1, width=1)
             new_label.bind("<Button-1>", lambda e, i=place[0], j=place[1]: self.board_on_click(i, j, e))
-            new_label.place(relx=0.14 * place[1], rely=0.130 * place[0],)
+            new_label.place(relx=0.14 * place[1], rely=0.130 * place[0], )
             self.displayed_pieces.append(new_label)
         return

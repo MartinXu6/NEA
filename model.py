@@ -112,11 +112,10 @@ class game:
                         self.board[end[0]][end[1]].location = (-1, -1)
                         if self.board[end[0]][end[1]].side == "reds":
                             self.reds.append(self.board[end[0]][end[1]])
-                            print([i.type for i in self.reds])
                         else:
                             self.blues.append(captured_piece)
-                            print([i.type for i in self.blues])
                     self.board[start[0]][start[1]] = 0
                     self.board[end[0]][end[1]] = piece
                     piece.location = end
+                    return True
 
