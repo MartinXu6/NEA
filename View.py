@@ -46,8 +46,22 @@ class GUI:
     def board_on_click(self, i, j, event):
         if self.clicked_piece != (-1, -1):
             self.destination = (i, j)
-            # self.red[self.clicked_piece[1]].place(relx=self.destination[0] * 0.126, y=self.destination[1] * 55)
-            # self.red[self.clicked_piece[1]].destroy()
+            if self.clicked_piece[0] == "red":
+                for location in range(len(self.blue_locations)):
+                    if self.blue_locations[location] == (i, j):
+                        self.destination = (-1, -1)
+                        self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
+                        self.captured = ("blue", location)
+                        self.clicked_piece = (-1, -1)
+                        break
+            elif self.clicked_piece[0] == "blue":
+                for location in range(len(self.red_locations)):
+                    if self.red_locations[location] == (i, j):
+                        self.destination = (-1, -1)
+                        self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
+                        self.captured = ("red", location)
+                        self.clicked_piece = (-1, -1)
+                        break
 
     def piece_on_click(self, i, j, event, side, index):
         if side == "red":
@@ -62,7 +76,7 @@ class GUI:
                         self.displayed_pieces = []
                 else:
                     self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
-                    self.captured = (self.side, self.index)
+                    self.captured = (side, index)
                     self.blue[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
                     for i in self.displayed_pieces:
@@ -80,7 +94,7 @@ class GUI:
                         self.displayed_pieces = []
                 else:
                     self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
-                    self.captured = (self.side, self.index)
+                    self.captured = (side, index)
                     self.red[self.clicked_piece[1]].config(bg="white")
                     self.clicked_piece = (-1, -1)
                     for i in self.displayed_pieces:
