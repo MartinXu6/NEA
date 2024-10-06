@@ -20,6 +20,8 @@ while True:
     blue_deployed_index = []
     blue_deployable = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7),
                        (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7)]
+    red_got_captured = []
+    blue_got_captured = []
     while True:
         gui.root.update()
         if gui.clicked_piece != (-1, -1):
@@ -111,8 +113,10 @@ while True:
                             for i in gui.displayed_pieces:
                                 i.destroy()
                                 gui.displayed_pieces = []
+                            blue_got_captured.append(gui.captured[1])
                             gui.blue[gui.captured[1]].destroy()
                             gui.make_move(gui.capturing[0], gui.capturing[1], gui.blue_locations[gui.captured[1]])
+                            gui.got_captured("blue",gui.captured[1], blue_got_captured)
                             gui.capturing = (-1, -1)
                             gui.captured = (-1, -1)
                             break
@@ -155,8 +159,10 @@ while True:
                             for i in gui.displayed_pieces:
                                 i.destroy()
                                 gui.displayed_pieces = []
+                            red_got_captured.append(gui.captured[1])
                             gui.red[gui.captured[1]].destroy()
                             gui.make_move(gui.capturing[0], gui.capturing[1], gui.red_locations[gui.captured[1]])
+                            gui.got_captured("red", gui.captured[1], red_got_captured)
                             gui.capturing = (-1, -1)
                             gui.captured = (-1, -1)
                             break

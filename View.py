@@ -258,4 +258,47 @@ class GUI:
             new_label.bind("<Button-1>", lambda e, i=place[0], j=place[1]: self.board_on_click(i, j, e))
             new_label.place(relx=0.14 * place[1], rely=0.130 * place[0], )
             self.displayed_pieces.append(new_label)
-        return
+
+    def got_captured(self, side, index,captured):
+        if side == "red":
+            if 0 <= index <= 7:
+                new_image = self.btpt
+            elif 8<= index <= 11:
+                new_image = self.bzpt
+            elif 12 <= index <= 13:
+                new_image = self.bopo
+            elif index == 14:
+                new_image = self.bopt
+            elif index == 15:
+                new_image = self.bzpo
+        elif side == "blue":
+            if 0 <= index <= 7:
+                new_image = self.rtpt
+            elif 8<= index <= 11:
+                new_image = self.rzpt
+            elif 12 <= index <= 13:
+                new_image = self.ropo
+            elif index == 14:
+                new_image = self.ropt
+            elif index == 15:
+                new_image = self.rzpo
+        if side == "red":
+            self.red.pop(index)
+            new_piece = Label(self.blue_pieces, image=new_image, bg="white")
+            new_piece.bind("<Button-1>",lambda e, i=-1, j=-1, index=index, s="blue": self.piece_on_click(i, j, e, s, index))
+            self.red.insert(index, new_piece)
+        else:
+            self.blue.pop(index)
+            new_piece = Label(self.red_pieces, image=new_image, bg="white")
+            new_piece.bind("<Button-1>",lambda e, i=-1, j=-1, index=index, s="red": self.piece_on_click(i, j, e, s, index))
+            self.blue.insert(index, new_piece)
+        length = len(captured)
+        if length > 8:
+            length -= 8
+            new_piece.place(relx=0.126*(length-1), y = 55 )
+        else:
+            new_piece.place(relx=0.126*(length-1), y = 0)
+        if side == "blue":
+            self.blue_locations[index] = (-1,-1)
+        else:
+            self.red_locations[index] = (-1,-1)
