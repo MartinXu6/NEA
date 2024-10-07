@@ -15,10 +15,10 @@ class GUI:
         self.blue = []
         self.red_locations = [(-1, -1)] * 16
         self.blue_locations = [(-1, -1)] * 16
-        self.capturing = (-1, -1)
-        self.captured = (-1, -1)
+        self.capturing = (-1, -1, 0)
+        self.captured = (-1, -1, 0)
 
-        self.clicked_piece = (-1, -1)
+        self.clicked_piece = (-1, -1, 0)
         self.destination = (-1, -1)
         self.piece_size = (45, 45)
         self.piece_colour = "white"
@@ -44,59 +44,122 @@ class GUI:
         self.bopo = self.bopo.resize(self.piece_size)
 
     def board_on_click(self, i, j, event):
-        if self.clicked_piece != (-1, -1):
+        if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
             self.destination = (i, j)
             if self.clicked_piece[0] == "red":
                 for location in range(len(self.blue_locations)):
                     if self.blue_locations[location] == (i, j):
                         self.destination = (-1, -1)
-                        self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
-                        self.captured = ("blue", location)
+                        self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
+                        self.captured = ("blue", location, 0)
                         self.clicked_piece = (-1, -1)
                         break
+
             elif self.clicked_piece[0] == "blue":
                 for location in range(len(self.red_locations)):
                     if self.red_locations[location] == (i, j):
                         self.destination = (-1, -1)
-                        self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
-                        self.captured = ("red", location)
+                        self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
+                        self.captured = ("red", location, 0)
                         self.clicked_piece = (-1, -1)
                         break
 
     def piece_on_click(self, i, j, event, side, index):
         if side == "red":
-            if self.clicked_piece == (-1, -1):
-                self.clicked_piece = ("red", index)
+            if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+                self.clicked_piece = ("red", index, 0)
             else:
                 if self.clicked_piece[0] == "red":
-                    self.red[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1)
+                    if self.clicked_piece[2] == 0:
+                        self.red[self.clicked_piece[1]].config(bg="white")
+                    elif self.clicked_piece[2] == 1:
+                        self.blue[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1, 0)
                     for i in self.displayed_pieces:
                         i.destroy()
                         self.displayed_pieces = []
                 else:
-                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
-                    self.captured = (side, index)
-                    self.blue[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1)
+                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
+                    self.captured = (side, index, 0)
+                    if self.clicked_piece[2] == 0:
+                        self.blue[self.clicked_piece[1]].config(bg="white")
+                    elif self.clicked_piece[2] == 1:
+                        self.red[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1, 0)
                     for i in self.displayed_pieces:
                         i.destroy()
                         self.displayed_pieces = []
         else:
-            if self.clicked_piece == (-1, -1):
-                self.clicked_piece = ("blue", index)
+            if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+                self.clicked_piece = ("blue", index, 0)
             else:
                 if self.clicked_piece[0] == "blue":
-                    self.blue[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1)
+                    if self.clicked_piece[2] == 0:
+                        self.blue[self.clicked_piece[1]].config(bg="white")
+                    elif self.clicked_piece[2] == 1:
+                        self.red[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1, 0)
                     for i in self.displayed_pieces:
                         i.destroy()
                         self.displayed_pieces = []
                 else:
-                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1])
-                    self.captured = (side, index)
-                    self.red[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1)
+                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[1])
+                    self.captured = (side, index, 0)
+                    if self.clicked_piece[2] == 0:
+                        self.red[self.clicked_piece[1]].config(bg="white")
+                    elif self.clicked_piece[2] == 1:
+                        self.blue[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1, 0)
+                    for i in self.displayed_pieces:
+                        i.destroy()
+                        self.displayed_pieces = []
+
+    def captured_on_click(self, i, j, event, side, index):
+        if side == "red":
+            if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+                self.clicked_piece = ("red", index, 1)
+            else:
+                if self.clicked_piece[0] == "red":
+                    if self.clicked_piece[2] == 0:
+                        self.red[self.clicked_piece[1]].config(bg="white")
+                    elif self.clicked_piece[2] == 1:
+                        self.blue[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1, 0)
+                    for i in self.displayed_pieces:
+                        i.destroy()
+                        self.displayed_pieces = []
+                else:
+                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
+                    self.captured = (side, index, 1)
+                    if self.clicked_piece[2] == 0:
+                        self.blue[self.clicked_piece[1]].config(bg="white")
+                    elif self.clicked_piece[2] == 1:
+                        self.red[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1, 0)
+                    for i in self.displayed_pieces:
+                        i.destroy()
+                        self.displayed_pieces = []
+        else:
+            if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+                self.clicked_piece = ("blue", index, 1)
+            else:
+                if self.clicked_piece[0] == "blue":
+                    if self.clicked_piece[2] == 0:
+                        self.blue[self.clicked_piece[1]].config(bg="white")
+                    elif self.clicked_piece[2] == 1:
+                        self.red[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1, 0)
+                    for i in self.displayed_pieces:
+                        i.destroy()
+                        self.displayed_pieces = []
+                else:
+                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
+                    self.captured = (side, index,1)
+                    if self.clicked_piece[2] == 0:
+                        self.red[self.clicked_piece[1]].config(bg="white")
+                    elif self.clicked_piece[2] == 1:
+                        self.blue[self.clicked_piece[1]].config(bg="white")
+                    self.clicked_piece = (-1, -1, 0)
                     for i in self.displayed_pieces:
                         i.destroy()
                         self.displayed_pieces = []
@@ -259,11 +322,11 @@ class GUI:
             new_label.place(relx=0.14 * place[1], rely=0.130 * place[0], )
             self.displayed_pieces.append(new_label)
 
-    def got_captured(self, side, index,captured):
+    def got_captured(self, side, index, captured):
         if side == "red":
             if 0 <= index <= 7:
                 new_image = self.btpt
-            elif 8<= index <= 11:
+            elif 8 <= index <= 11:
                 new_image = self.bzpt
             elif 12 <= index <= 13:
                 new_image = self.bopo
@@ -274,7 +337,7 @@ class GUI:
         elif side == "blue":
             if 0 <= index <= 7:
                 new_image = self.rtpt
-            elif 8<= index <= 11:
+            elif 8 <= index <= 11:
                 new_image = self.rzpt
             elif 12 <= index <= 13:
                 new_image = self.ropo
@@ -285,20 +348,22 @@ class GUI:
         if side == "red":
             self.red.pop(index)
             new_piece = Label(self.blue_pieces, image=new_image, bg="white")
-            new_piece.bind("<Button-1>",lambda e, i=-1, j=-1, index=index, s="blue": self.piece_on_click(i, j, e, s, index))
+            new_piece.bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=index, s="blue": self.captured_on_click(i, j, e, s, index))
             self.red.insert(index, new_piece)
         else:
             self.blue.pop(index)
             new_piece = Label(self.red_pieces, image=new_image, bg="white")
-            new_piece.bind("<Button-1>",lambda e, i=-1, j=-1, index=index, s="red": self.piece_on_click(i, j, e, s, index))
+            new_piece.bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=index, s="red": self.captured_on_click(i, j, e, s, index))
             self.blue.insert(index, new_piece)
         length = len(captured)
         if length > 8:
             length -= 8
-            new_piece.place(relx=0.126*(length-1), y = 55 )
+            new_piece.place(relx=0.126 * (length - 1), y=55)
         else:
-            new_piece.place(relx=0.126*(length-1), y = 0)
+            new_piece.place(relx=0.126 * (length - 1), y=0)
         if side == "blue":
-            self.blue_locations[index] = (-1,-1)
+            self.blue_locations[index] = (-1, -1)
         else:
-            self.red_locations[index] = (-1,-1)
+            self.red_locations[index] = (-1, -1)

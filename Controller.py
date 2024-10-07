@@ -24,7 +24,7 @@ while True:
     blue_got_captured = []
     while True:
         gui.root.update()
-        if gui.clicked_piece != (-1, -1):
+        if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
             if gui.clicked_piece[0] == "red" and gui.clicked_piece[1] not in red_deployed_index:
                 gui.red[gui.clicked_piece[1]].config(bg="black")
                 gui.display_movable(red_deployable)
@@ -52,7 +52,7 @@ while True:
     # blue deployment cycle
     while True:
         gui.root.update()
-        if gui.clicked_piece != (-1, -1):
+        if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
             if gui.clicked_piece[0] == "blue" and gui.clicked_piece[1] not in blue_deployed_index:
                 gui.blue[gui.clicked_piece[1]].config(bg="black")
                 gui.display_movable(blue_deployable)
@@ -83,7 +83,7 @@ while True:
         # red move cycle
         while True:
             gui.root.update()
-            if gui.clicked_piece != (-1, -1):
+            if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                 if gui.clicked_piece[0] == "red":
                     gui.red[gui.clicked_piece[1]].config(bg="black")
                     red_movable = Game.reds[gui.clicked_piece[1]].movable(Game.board)
@@ -129,7 +129,7 @@ while True:
         # blue move cycle
         while True:
             gui.root.update()
-            if gui.clicked_piece != (-1, -1):
+            if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                 if gui.clicked_piece[0] == "blue":
                     gui.blue[gui.clicked_piece[1]].config(bg="black")
                     blue_movable = Game.blues[gui.clicked_piece[1]].movable(Game.board)
