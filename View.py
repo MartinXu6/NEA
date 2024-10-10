@@ -1,7 +1,31 @@
+import time
 from tkinter import *
 from PIL import Image
 from PIL import ImageTk
 import model
+
+
+
+class start_menu:
+    def __init__(self):
+        self.menu = Tk()
+        self.menu.geometry("1000x600")
+        self.single = Button(self.menu, text="Single Player", bg="red", height="10", width="20", command=self.single)
+        self.multi = Button(self.menu, text="Multi Player", bg="blue", height="10", width="20", command=self.multi)
+        self.quit = Button(self.menu, text="QUIT", bg="grey", height="10", width="20", command=quit)
+        self.single.pack()
+        self.multi.pack()
+        self.quit.pack()
+        self.running = False
+        self.menu.mainloop()
+
+    def single(self):
+        self.menu.destroy()
+        self.running = "single"
+
+    def multi(self):
+        self.menu.destroy()
+        self.running = "multi"
 
 
 class GUI:
@@ -15,6 +39,8 @@ class GUI:
         self.blue = []
         self.red_locations = [(-1, -1)] * 16
         self.blue_locations = [(-1, -1)] * 16
+        self.red_captured = []
+        self.blue_captured = []
         self.capturing = (-1, -1, 0)
         self.captured = (-1, -1, 0)
 
@@ -44,7 +70,7 @@ class GUI:
         self.bopo = self.bopo.resize(self.piece_size)
 
     def board_on_click(self, i, j, event):
-        if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+        if self.clicked_piece[0] != -1 and self.clicked_piece[1] != -1:
             self.destination = (i, j)
             if self.clicked_piece[0] == "red":
                 for location in range(len(self.blue_locations)):
@@ -52,8 +78,16 @@ class GUI:
                         self.destination = (-1, -1)
                         self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
                         self.captured = ("blue", location, 0)
-                        self.clicked_piece = (-1, -1)
+                        self.clicked_piece = (-1, -1, 0)
                         break
+                else:
+                    for location in range(len(self.red_captured)):
+                        if self.red_locations[self.red_captured[location]] == (i, j):
+                            self.destination = (-1, -1)
+                            self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
+                            self.captured = ("red", self.red_captured[location], 1)
+                            self.clicked_piece = (-1, -1, 0)
+                            break
 
             elif self.clicked_piece[0] == "blue":
                 for location in range(len(self.red_locations)):
@@ -61,8 +95,16 @@ class GUI:
                         self.destination = (-1, -1)
                         self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
                         self.captured = ("red", location, 0)
-                        self.clicked_piece = (-1, -1)
+                        self.clicked_piece = (-1, -1, 0)
                         break
+                else:
+                    for location in range(len(self.blue_captured)):
+                        if self.blue_locations[self.blue_captured[location]] == (i, j):
+                            self.destination = (-1, -1)
+                            self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
+                            self.captured = ("blue", self.blue_captured[location], 1)
+                            self.clicked_piece = (-1, -1, 0)
+                            break
 
     def piece_on_click(self, i, j, event, side, index):
         if side == "red":
@@ -103,7 +145,7 @@ class GUI:
                         i.destroy()
                         self.displayed_pieces = []
                 else:
-                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[1])
+                    self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
                     self.captured = (side, index, 0)
                     if self.clicked_piece[2] == 0:
                         self.red[self.clicked_piece[1]].config(bg="white")
@@ -154,7 +196,7 @@ class GUI:
                         self.displayed_pieces = []
                 else:
                     self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
-                    self.captured = (side, index,1)
+                    self.captured = (side, index, 1)
                     if self.clicked_piece[2] == 0:
                         self.red[self.clicked_piece[1]].config(bg="white")
                     elif self.clicked_piece[2] == 1:
@@ -271,6 +313,28 @@ class GUI:
         # blue[15].bind("<Button-1>", lambda e, i=-1, j=-1,index = 15, s="blue": piece_on_click(i, j, e, s,index))
         # blue[15].place(relx=0 * 0.126, y=0)
 
+    def captured_deploy(self, side, piece, end):
+        if side == "red":
+            previous_image = self.blue[piece].cget("image")
+            self.blue[piece].destroy()
+            self.blue.pop(piece)
+            new_piece = Label(self.main_board, image=previous_image, bg="white")
+            new_piece.bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=piece, s="red": self.captured_on_click(i, j, e, s, index))
+            self.blue.insert(piece, new_piece)
+            self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+            self.blue_locations[piece] = end
+        else:
+            previous_image = self.red[piece].cget("image")
+            self.red[piece].destroy()
+            self.red.pop(piece)
+            new_piece = Label(self.main_board, image=previous_image, bg="white")
+            new_piece.bind("<Button-1>",
+                           lambda e, i=-1, j=-1, index=piece, s="blue": self.captured_on_click(i, j, e, s, index))
+            self.red.insert(piece, new_piece)
+            self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+            self.red_locations[piece] = end
+
     def make_deploy(self, side, piece, end):
         if side == "red":
             previous_image = self.red[piece].cget("image")
@@ -293,36 +357,58 @@ class GUI:
             self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.blue_locations[piece] = end
 
-    def make_move(self, side, piece, end):
+    def make_move(self, side, piece, end, CAPTURED):
         if side == "red":
-            previous_image = self.red[piece].cget("image")
-            self.red[piece].destroy()
-            self.red.pop(piece)
-            new_piece = Label(self.main_board, image=previous_image, bg="white")
-            new_piece.bind("<Button-1>",
-                           lambda e, i=-1, j=-1, index=piece, s="red": self.piece_on_click(i, j, e, s, index))
-            self.red.insert(piece, new_piece)
-            self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
-            self.red_locations[piece] = end
+            if CAPTURED == 0:
+                previous_image = self.red[piece].cget("image")
+                self.red[piece].destroy()
+                self.red.pop(piece)
+                new_piece = Label(self.main_board, image=previous_image, bg="white")
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=piece, s="red": self.piece_on_click(i, j, e, s, index))
+                self.red.insert(piece, new_piece)
+                self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+                self.red_locations[piece] = end
+            else:
+                previous_image = self.blue[piece].cget("image")
+                self.blue[piece].destroy()
+                self.blue.pop(piece)
+                new_piece = Label(self.main_board, image=previous_image, bg="white")
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=piece, s="red": self.captured_on_click(i, j, e, s, index))
+                self.blue.insert(piece, new_piece)
+                self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+                self.blue_locations[piece] = end
         else:
-            previous_image = self.blue[piece].cget("image")
-            self.blue[piece].destroy()
-            self.blue.pop(piece)
-            new_piece = Label(self.main_board, image=previous_image, bg="white")
-            new_piece.bind("<Button-1>",
-                           lambda e, i=-1, j=-1, index=piece, s="blue": self.piece_on_click(i, j, e, s, index))
-            self.blue.insert(piece, new_piece)
-            self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
-            self.blue_locations[piece] = end
+            if CAPTURED == 0:
+                previous_image = self.blue[piece].cget("image")
+                self.blue[piece].destroy()
+                self.blue.pop(piece)
+                new_piece = Label(self.main_board, image=previous_image, bg="white")
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=piece, s="blue": self.piece_on_click(i, j, e, s, index))
+                self.blue.insert(piece, new_piece)
+                self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+                self.blue_locations[piece] = end
+            else:
+                previous_image = self.red[piece].cget("image")
+                self.red[piece].destroy()
+                self.red.pop(piece)
+                new_piece = Label(self.main_board, image=previous_image, bg="white")
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=piece, s="blue": self.captured_on_click(i, j, e, s, index))
+                self.red.insert(piece, new_piece)
+                self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+                self.red_locations[piece] = end
 
     def display_movable(self, movable):
         for place in movable:
-            new_label = Label(self.main_board, bg="yellow", height=1, width=1)
+            new_label = Label(self.main_board, bg="black", height=1, width=1)
             new_label.bind("<Button-1>", lambda e, i=place[0], j=place[1]: self.board_on_click(i, j, e))
             new_label.place(relx=0.14 * place[1], rely=0.130 * place[0], )
             self.displayed_pieces.append(new_label)
 
-    def got_captured(self, side, index, captured):
+    def got_captured(self, side, index, captured, CAPTURED, reverse_captured):
         if side == "red":
             if 0 <= index <= 7:
                 new_image = self.btpt
@@ -333,7 +419,7 @@ class GUI:
             elif index == 14:
                 new_image = self.bopt
             elif index == 15:
-                new_image = self.bzpo
+                return
         elif side == "blue":
             if 0 <= index <= 7:
                 new_image = self.rtpt
@@ -344,26 +430,78 @@ class GUI:
             elif index == 14:
                 new_image = self.ropt
             elif index == 15:
-                new_image = self.rzpo
+                return
         if side == "red":
-            self.red.pop(index)
             new_piece = Label(self.blue_pieces, image=new_image, bg="white")
-            new_piece.bind("<Button-1>",
-                           lambda e, i=-1, j=-1, index=index, s="blue": self.captured_on_click(i, j, e, s, index))
-            self.red.insert(index, new_piece)
+            if reverse_captured:
+                self.blue.pop(index)
+                self.blue.insert(index, new_piece)
+                self.blue_captured.remove(index)
+            else:
+                self.red.pop(index)
+                self.red.insert(index, new_piece)
+                self.red_captured.append(index)
+            if reverse_captured:
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=index, s="blue": self.piece_on_click(i, j, e, s, index))
+            else:
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=index, s="blue": self.captured_on_click(i, j, e, s, index))
         else:
-            self.blue.pop(index)
             new_piece = Label(self.red_pieces, image=new_image, bg="white")
-            new_piece.bind("<Button-1>",
-                           lambda e, i=-1, j=-1, index=index, s="red": self.captured_on_click(i, j, e, s, index))
-            self.blue.insert(index, new_piece)
-        length = len(captured)
+            if reverse_captured:
+                self.red.pop(index)
+                self.red.insert(index, new_piece)
+                self.red_captured.remove(index)
+            else:
+                self.blue.pop(index)
+                self.blue.insert(index, new_piece)
+                self.blue_captured.append(index)
+            if reverse_captured:
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=index, s="red": self.piece_on_click(i, j, e, s, index))
+            else:
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=index, s="red": self.captured_on_click(i, j, e, s, index))
+        if side == "blue":
+            if reverse_captured:
+                self.red_locations[index] = (-1, -1)
+            else:
+                self.blue_locations[index] = (-1, -1)
+        else:
+            if reverse_captured:
+                self.blue_locations[index] = (-1, -1)
+            else:
+                self.red_locations[index] = (-1, -1)
+        if side == "red":
+            if reverse_captured:
+                length = len([1 for i in range(16) if self.blue_locations[i] == (-1, -1)])
+            else:
+                length = len([1 for i in range(16) if self.red_locations[i] == (-1, -1)])
+        else:
+            if reverse_captured:
+                length = len([1 for i in range(16) if self.red_locations[i] == (-1, -1)])
+            else:
+                length = len([1 for i in range(16) if self.blue_locations[i] == (-1, -1)])
         if length > 8:
             length -= 8
             new_piece.place(relx=0.126 * (length - 1), y=55)
         else:
             new_piece.place(relx=0.126 * (length - 1), y=0)
-        if side == "blue":
-            self.blue_locations[index] = (-1, -1)
+
+    def game_won(self, side):
+        if side == "red":
+            Game_over = Label(self.root, text=f"GAME OVER RED WON!", height=25, width=50, font=500, bg="red")
         else:
-            self.red_locations[index] = (-1, -1)
+            Game_over = Label(self.root, text=f"GAME OVER BLUE WON!", height=25, width=50, font=500, bg="blue")
+        Game_over.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.root.update()
+        time.sleep(3)
+        pls = Label(self.root, text="SIR CAN I PLEASE GET AN A*!!!", height = 25, width = 50, font = 500, bg = "yellow")
+        pls.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.root.update()
+        time.sleep(1)
+        pls.destroy()
+        self.root.update()
+        time.sleep(2)
+        quit()

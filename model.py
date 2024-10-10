@@ -10,6 +10,8 @@ class Piece:
 
     def movable(self, board):
         start = self.location
+        if start == (-1,-1):
+            return []
         all_moves = []
         movables = []
         for i in self.type, self.type[::-1]:
@@ -101,21 +103,29 @@ class game:
     def move(self, piece, end, side):
         if piece != 0:
             if piece.side == side:
-                if self.is_move_legal(piece, end):
+                if piece.location == (-1,-1):
                     start = piece.location
-                    if self.board[end[0]][end[1]] != 0:
-                        captured_piece = self.board[end[0]][end[1]]
-                        if captured_piece.type == (0, 1):
-                            self.game_won(piece.side)
-                            self.winner = piece.side
-                        self.board[end[0]][end[1]].side = piece.side
-                        self.board[end[0]][end[1]].location = (-1, -1)
-                        if self.board[end[0]][end[1]].side == "reds":
-                            self.reds.append(self.board[end[0]][end[1]])
-                        else:
-                            self.blues.append(captured_piece)
-                    self.board[start[0]][start[1]] = 0
-                    self.board[end[0]][end[1]] = piece
-                    piece.location = end
-                    return True
+                    if self.board[end[0]][end[1]] == 0:
+                        self.board[end[0]][end[1]] = piece
+                        piece.location = end
+                        return True
+                    else:
+                        return False
+
+                else:
+                    if self.is_move_legal(piece, end):
+                        start = piece.location
+                        if self.board[end[0]][end[1]] != 0:
+                            captured_piece = self.board[end[0]][end[1]]
+                            if captured_piece.type == (0, 1):
+                                self.game_won(piece.side)
+                                self.winner = piece.side
+                            self.board[end[0]][end[1]].side = piece.side
+                            self.board[end[0]][end[1]].location = (-1, -1)
+                        self.board[start[0]][start[1]] = 0
+                        self.board[end[0]][end[1]] = piece
+                        piece.location = end
+                        return True
+                    else:
+                        return False
 

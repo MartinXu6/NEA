@@ -5,15 +5,20 @@ import copy
 from tkinter import *
 from random import randint
 
+menu = View.start_menu()
+
+game_mode = ""
+if menu.running:
+    game_mode = menu.running
+else:
+    quit()
+
 gui = View.GUI()
 gui.initialise_GUI()
 Game = model.game()
 colours = ["red", "blue", "green", "white"]
 
-# gui.root.wm_attributes("-transparentcolor", colours[randint(0,3)])
-# gui.root.update()
 while True:
-    # red deployment cycle
     red_deployed_index = []
     red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
                       (7, 0), (7, 1), (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (7, 7)]
@@ -22,6 +27,8 @@ while True:
                        (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7)]
     red_got_captured = []
     blue_got_captured = []
+
+    # red deployment cycle
     while True:
         gui.root.update()
         if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
@@ -81,151 +88,271 @@ while True:
     Game.deployed = True
     while True:
         # red move cycle
+        if Game.winner:
+            gui.game_won(Game.winner)
+            break
         while True:
             gui.root.update()
             if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                 if gui.clicked_piece[0] == "red":
-                    gui.red[gui.clicked_piece[1]].config(bg="black")
-                    red_movable = Game.reds[gui.clicked_piece[1]].movable(Game.board)
+                    if gui.clicked_piece[2] == 0:
+                        red_movable = []
+                        if gui.red_locations[gui.clicked_piece[1]] == (-1, -1):
+                            gui.red[gui.clicked_piece[1]].config(bg="black")
+                            for i in range(8):
+                                for j in range(8):
+                                    if Game.board[i][j] == 0:
+                                        red_movable.append((i, j))
+                        else:
+                            gui.red[gui.clicked_piece[1]].config(bg="black")
+                            red_movable = Game.reds[gui.clicked_piece[1]].movable(Game.board)
+                    else:
+                        red_movable = []
+                        if gui.blue_locations[gui.clicked_piece[1]] == (-1, -1):
+                            gui.blue[gui.clicked_piece[1]].config(bg="black")
+                            for i in range(8):
+                                for j in range(8):
+                                    if Game.board[i][j] == 0:
+                                        red_movable.append((i, j))
+                        else:
+                            gui.blue[gui.clicked_piece[1]].config(bg="black")
+                            red_movable = Game.blues[gui.clicked_piece[1]].movable(Game.board)
                     gui.display_movable(red_movable)
                     if gui.destination != (-1, -1):
-                        if Game.move(Game.reds[gui.clicked_piece[1]], gui.destination, "red"):
-                            for i in gui.displayed_pieces:
-                                i.destroy()
-                                gui.displayed_pieces = []
-                            gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
-                            gui.destination = (-1, -1)
-                            gui.clicked_piece = (-1, -1)
-                            break
+                        current_piece = ""
+                        location = ""
+                        captured = 0
+                        if gui.clicked_piece[2] == 0:
+                            current_piece = Game.reds[gui.clicked_piece[1]]
+                            location = gui.red_locations[gui.clicked_piece[1]]
+                            captured = 0
                         else:
-                            gui.red[gui.clicked_piece[1]].config(bg="white")
-                            for i in gui.displayed_pieces:
-                                i.destroy()
-                                gui.displayed_pieces = []
-                            gui.clicked_piece = (-1, -1)
-                            gui.destination = (-1, -1)
+                            current_piece = Game.blues[gui.clicked_piece[1]]
+                            location = gui.blue_locations[gui.clicked_piece[1]]
+                            captured = 1
+                        if location == (-1, -1):
+                            if gui.clicked_piece[2] == 1:
+                                if Game.move(Game.blues[gui.clicked_piece[1]], gui.destination, "red"):
+                                    if gui.destination in red_movable:
+                                        for i in gui.displayed_pieces:
+                                            i.destroy()
+                                            gui.displayed_pieces = []
+                                        gui.captured_deploy("red", gui.clicked_piece[1], gui.destination)
+                                        gui.destination = (-1, -1)
+                                        gui.clicked_piece = (-1, -1, 0)
+                                        break
+                            else:
+                                if Game.move(Game.reds[gui.clicked_piece[1]], gui.destination, "red"):
+                                    if gui.destination in red_movable:
+                                        for i in gui.displayed_pieces:
+                                            i.destroy()
+                                            gui.displayed_pieces = []
+                                        gui.make_deploy("red", gui.clicked_piece[1], gui.destination)
+                                        gui.destination = (-1, -1)
+                                        gui.clicked_piece = (-1, -1, 0)
+                                        break
+                        else:
+                            if Game.move(current_piece, gui.destination, "red"):
+                                for i in gui.displayed_pieces:
+                                    i.destroy()
+                                    gui.displayed_pieces = []
+                                if gui.clicked_piece[2] == 0:
+                                    gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination, False)
+                                else:
+                                    gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination, True)
+                                gui.destination = (-1, -1)
+                                gui.clicked_piece = (-1, -1, 0)
+                                break
+                            else:
+                                if gui.clicked_piece[2] == 0:
+                                    gui.red[gui.clicked_piece[1]].config(bg="white")
+                                else:
+                                    gui.blue[gui.clicked_piece[1]].config(bg="white")
+                                for i in gui.displayed_pieces:
+                                    i.destroy()
+                                    gui.displayed_pieces = []
+                                gui.clicked_piece = (-1, -1, 0)
+                                gui.destination = (-1, -1)
                 else:
-                    gui.clicked_piece = (-1, -1)
+                    gui.clicked_piece = (-1, -1, 0)
             else:
-                if gui.captured != (-1, -1) and gui.capturing != (-1, -1):
+                if gui.captured[0] != -1 and gui.captured[1] != -1 and gui.capturing[0] != -1 and gui.capturing[
+                    1] != -1:
                     if gui.capturing[0] == "red":
-                        if Game.move(Game.reds[gui.capturing[1]], gui.blue_locations[gui.captured[1]], "red"):
+                        current_piece = ""
+                        position = ""
+                        if gui.capturing[2] == 0:
+                            current_piece = Game.reds[gui.capturing[1]]
+                        else:
+                            current_piece = Game.blues[gui.capturing[1]]
+                        if gui.captured[2] == 0:
+                            position = gui.blue_locations[gui.captured[1]]
+                        else:
+                            position = gui.red_locations[gui.captured[1]]
+                        if Game.move(current_piece, position, "red"):
                             for i in gui.displayed_pieces:
                                 i.destroy()
                                 gui.displayed_pieces = []
-                            blue_got_captured.append(gui.captured[1])
-                            gui.blue[gui.captured[1]].destroy()
-                            gui.make_move(gui.capturing[0], gui.capturing[1], gui.blue_locations[gui.captured[1]])
-                            gui.got_captured("blue",gui.captured[1], blue_got_captured)
-                            gui.capturing = (-1, -1)
-                            gui.captured = (-1, -1)
+                            if gui.captured[2] == 0:
+                                reverse_captured = False
+                            else:
+                                reverse_captured = True
+                            if gui.captured[2] == 0:
+                                gui.blue[gui.captured[1]].destroy()
+                            else:
+                                gui.red[gui.captured[1]].destroy()
+                            if gui.captured[2]  == 0:
+                                end_point = gui.blue_locations[gui.captured[1]]
+                            else:
+                                end_point = gui.red_locations[gui.captured[1]]
+                            if gui.capturing[2] == 0:
+                                gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
+                                              False)
+                                gui.got_captured("blue", gui.captured[1], blue_got_captured, False, reverse_captured)
+                            else:
+                                gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
+                                              True)
+                                gui.got_captured("blue", gui.captured[1], blue_got_captured, True, reverse_captured)
+                            gui.capturing = (-1, -1, 0)
+                            gui.captured = (-1, -1, 0)
                             break
                 for i in gui.displayed_pieces:
                     i.destroy()
                     gui.displayed_pieces = []
-                gui.captured = (-1, -1)
-                gui.capturing = (-1, -1)
+                gui.captured = (-1, -1, 0)
+                gui.capturing = (-1, -1, 0)
 
         # blue move cycle
+        if Game.winner:
+            gui.game_won(Game.winner)
+            break
         while True:
             gui.root.update()
             if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                 if gui.clicked_piece[0] == "blue":
-                    gui.blue[gui.clicked_piece[1]].config(bg="black")
-                    blue_movable = Game.blues[gui.clicked_piece[1]].movable(Game.board)
+                    if gui.clicked_piece[2] == 0:
+                        blue_movable = []
+                        if gui.blue_locations[gui.clicked_piece[1]] == (-1, -1):
+                            gui.blue[gui.clicked_piece[1]].config(bg="black")
+                            for i in range(8):
+                                for j in range(8):
+                                    if Game.board[i][j] == 0:
+                                        blue_movable.append((i, j))
+                        else:
+                            gui.blue[gui.clicked_piece[1]].config(bg="black")
+                            blue_movable = Game.blues[gui.clicked_piece[1]].movable(Game.board)
+                    else:
+                        blue_movable = []
+                        if gui.red_locations[gui.clicked_piece[1]] == (-1, -1):
+                            gui.red[gui.clicked_piece[1]].config(bg="black")
+                            for i in range(8):
+                                for j in range(8):
+                                    if Game.board[i][j] == 0:
+                                        blue_movable.append((i, j))
+                        else:
+                            gui.red[gui.clicked_piece[1]].config(bg="black")
+                            blue_movable = Game.reds[gui.clicked_piece[1]].movable(Game.board)
                     gui.display_movable(blue_movable)
                     if gui.destination != (-1, -1):
-                        if Game.move(Game.blues[gui.clicked_piece[1]], gui.destination, "blue"):
-                            for i in gui.displayed_pieces:
-                                i.destroy()
-                                gui.displayed_pieces = []
-                            gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
-                            gui.destination = (-1, -1)
-                            gui.clicked_piece = (-1, -1)
-                            break
+                        current_piece = ""
+                        location = ""
+                        captured = 0
+                        if gui.clicked_piece[2] == 0:
+                            current_piece = Game.blues[gui.clicked_piece[1]]
+                            location = gui.blue_locations[gui.clicked_piece[1]]
+                            captured = 0
                         else:
-                            gui.blue[gui.clicked_piece[1]].config(bg="white")
-                            for i in gui.displayed_pieces:
-                                i.destroy()
-                                gui.displayed_pieces = []
-                            gui.clicked_piece = (-1, -1)
-                            gui.destination = (-1, -1)
+                            current_piece = Game.reds[gui.clicked_piece[1]]
+                            location = gui.red_locations[gui.clicked_piece[1]]
+                            captured = 1
+                        if location == (-1, -1):
+                            if gui.clicked_piece[2] == 1:
+                                if Game.move(Game.reds[gui.clicked_piece[1]], gui.destination, "blue"):
+                                    if gui.destination in blue_movable:
+                                        for i in gui.displayed_pieces:
+                                            i.destroy()
+                                            gui.displayed_pieces = []
+                                        gui.captured_deploy("blue", gui.clicked_piece[1], gui.destination)
+                                        gui.destination = (-1, -1)
+                                        gui.clicked_piece = (-1, -1, 0)
+                                        break
+                            else:
+                                if Game.move(Game.blues[gui.clicked_piece[1]], gui.destination, "blue"):
+                                    if gui.destination in blue_movable:
+                                        for i in gui.displayed_pieces:
+                                            i.destroy()
+                                            gui.displayed_pieces = []
+                                        gui.make_deploy("blue", gui.clicked_piece[1], gui.destination)
+                                        gui.destination = (-1, -1)
+                                        gui.clicked_piece = (-1, -1, 0)
+                                        break
+                        else:
+                            if Game.move(current_piece, gui.destination, "blue"):
+                                for i in gui.displayed_pieces:
+                                    i.destroy()
+                                    gui.displayed_pieces = []
+                                if gui.clicked_piece[2] == 0:
+                                    gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination, False)
+                                else:
+                                    gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination, True)
+                                gui.destination = (-1, -1)
+                                gui.clicked_piece = (-1, -1, 0)
+                                break
+                            else:
+                                if gui.clicked_piece[2] == 0:
+                                    gui.blue[gui.clicked_piece[1]].config(bg="white")
+                                else:
+                                    gui.red[gui.clicked_piece[1]].config(bg="white")
+                                for i in gui.displayed_pieces:
+                                    i.destroy()
+                                    gui.displayed_pieces = []
+                                gui.clicked_piece = (-1, -1, 0)
+                                gui.destination = (-1, -1)
                 else:
-                    gui.clicked_piece = (-1, -1)
+                    gui.clicked_piece = (-1, -1, 0)
             else:
-                if gui.captured != (-1, -1) and gui.capturing != (-1, -1):
+                if gui.captured[0] != -1 and gui.captured[1] != -1 and gui.capturing[0] != -1 and gui.capturing[
+                    1] != -1:
                     if gui.capturing[0] == "blue":
-                        if Game.move(Game.blues[gui.capturing[1]], gui.red_locations[gui.captured[1]], "blue"):
+                        current_piece = ""
+                        position = ""
+                        if gui.capturing[2] == 0:
+                            current_piece = Game.blues[gui.capturing[1]]
+                        else:
+                            current_piece = Game.reds[gui.capturing[1]]
+                        if gui.captured[2] == 0:
+                            position = gui.red_locations[gui.captured[1]]
+                        else:
+                            position = gui.blue_locations[gui.captured[1]]
+                        if Game.move(current_piece, position, "blue"):
                             for i in gui.displayed_pieces:
                                 i.destroy()
                                 gui.displayed_pieces = []
-                            red_got_captured.append(gui.captured[1])
-                            gui.red[gui.captured[1]].destroy()
-                            gui.make_move(gui.capturing[0], gui.capturing[1], gui.red_locations[gui.captured[1]])
-                            gui.got_captured("red", gui.captured[1], red_got_captured)
-                            gui.capturing = (-1, -1)
-                            gui.captured = (-1, -1)
+                            if gui.captured[2] == 0 :
+                                reverse_captured = False
+                            else:
+                                reverse_captured = True
+                            if gui.captured[2] == 0:
+                                gui.red[gui.captured[1]].destroy()
+                            else:
+                                gui.blue[gui.captured[1]].destroy()
+                            if gui.captured[2] == 0:
+                                end_point = gui.red_locations[gui.captured[1]]
+                            else:
+                                end_point = gui.blue_locations[gui.captured[1]]
+                            if gui.capturing[2] == 0:
+                                gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
+                                              False)
+                                gui.got_captured("red", gui.captured[1], red_got_captured, False, reverse_captured)
+                            else:
+                                gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
+                                              True)
+                                gui.got_captured("red", gui.captured[1], red_got_captured, True, reverse_captured)
+                            gui.capturing = (-1, -1, 0)
+                            gui.captured = (-1, -1, 0)
                             break
                 for i in gui.displayed_pieces:
                     i.destroy()
                     gui.displayed_pieces = []
-                gui.captured = (-1, -1)
-                gui.capturing = (-1, -1)
-
-# while True:
-#     # red move
-#     s, e = input("Input the two cords for red move").split()
-#     while True:
-#         if Game.is_move_legal(Game.board[int(s[0])][int(s[1])], (int(e[0]), int(e[1]))):
-#             break
-#         else:
-#             s, e = input("Input the two cords for red move").split()
-#     Game.move(Game.board[int(s[0])][int(s[1])], (int(e[0]), int(e[1])), "red")
-#     current_board = copy.deepcopy(Game.board)
-#     for i in range(8):
-#         for j in range(8):
-#             if current_board[i][j] != 0:
-#                 current_board[i][j] = current_board[i][j].type
-#     pprint.pprint(current_board)
-#     if Game.winner:
-#         break
-#     # blue move
-#     s, e = input("Input the two cords for blue move").split()
-#     while True:
-#         if Game.is_move_legal(Game.board[int(s[0])][int(s[1])], (int(e[0]), int(e[1]))):
-#             break
-#         else:
-#             s, e = input("Input the two cords for blue move").split()
-#     Game.move(Game.board[int(s[0])][int(s[1])], (int(e[0]), int(e[1])), "blue")
-#     current_board = copy.deepcopy(Game.board)
-#     for i in range(8):
-#         for j in range(8):
-#             if current_board[i][j] != 0:
-#                 current_board[i][j] = current_board[i][j].type
-#     pprint.pprint(current_board)
-#     if Game.winner:
-#         break
-# deployment cycles
-
-# reds deploying
-# while Game.reds:
-#     Game.deploy(Game.reds[index], (int(ending[0]), int(ending[1])))
-#     current_board = copy.deepcopy(Game.board)
-#     for i in range(8):
-#         for j in range(8):
-#             if current_board[i][j] != 0:
-#                 current_board[i][j] = current_board[i][j].type
-#     pprint.pprint(current_board)
-# # blues deploying
-#
-# while Game.blues:
-#     index = int(input(f"{[i.type for i in Game.blues]}"))
-#     ending = input("Input the cords")
-#     Game.deploy(Game.blues[index], (int(ending[0]), int(ending[1])))
-#     current_board = copy.deepcopy(Game.board)
-#     for i in range(8):
-#         for j in range(8):
-#             if current_board[i][j] != 0:
-#                 current_board[i][j] = current_board[i][j].type
-#     pprint.pprint(current_board)
-# Game.deployed = True
+                gui.captured = (-1, -1, 0)
+                gui.capturing = (-1, -1, 0)
