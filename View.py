@@ -1,9 +1,9 @@
 import time
 from tkinter import *
+import tkinter.scrolledtext as st
 from PIL import Image
 from PIL import ImageTk
 import model
-
 
 
 class start_menu:
@@ -28,10 +28,34 @@ class start_menu:
         self.running = "multi"
 
 
+class Choosing:
+    def __init__(self):
+        self.choosing = Tk()
+        self.choosing.geometry("200x200")
+        self.choice = Label(self.choosing, text="Choose your side")
+        self.red = Button(self.choosing, text="Red", bg="red", height="5", width="10", command=self.red)
+        self.blue = Button(self.choosing, text="Blue", bg="blue", height="5", width="10", command=self.blue)
+        Side = ""
+        self.choice.pack()
+        self.red.pack()
+        self.blue.pack()
+        self.choosing.mainloop()
+
+    def red(self):
+        self.choosing.destroy()
+        self.Side = "red"
+
+    def blue(self):
+        self.choosing.destroy()
+        self.Side = "blue"
+
+
 class GUI:
     def __init__(self):
         self.root = Tk()
         self.main_board = Frame(self.root, bg="black", bd=0, width=440, height=440)
+        self.restart_button = Button(self.root, bg="yellow", text="QUIT", width=20, height=10, command=self.restart)
+        self.moves = st.ScrolledText(self.root,width= 50,height = 20,)
         self.red_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
         self.blue_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
         self.displayed_pieces = []
@@ -43,31 +67,27 @@ class GUI:
         self.blue_captured = []
         self.capturing = (-1, -1, 0)
         self.captured = (-1, -1, 0)
-
+        self.red_spots = [i for i in range(16)]
+        self.blue_spots = [i for i in range(16)]
+        self.red_taken_spots = [-1 for i in range(16)]
+        self.blue_taken_spots = [-1 for i in range(16)]
         self.clicked_piece = (-1, -1, 0)
         self.destination = (-1, -1)
         self.piece_size = (45, 45)
         self.piece_colour = "white"
-        self.rtpt = Image.open("Images/Pieces/r2.2.png")
-        self.rtpt = self.rtpt.resize(self.piece_size)
-        self.rzpo = Image.open("Images/Pieces/r0.1.png")
-        self.rzpo = self.rzpo.resize(self.piece_size)
-        self.ropo = Image.open("Images/Pieces/r1.1.png")
-        self.ropo = self.ropo.resize(self.piece_size)
-        self.ropt = Image.open("Images/Pieces/r1.2.png")
-        self.ropt = self.ropt.resize(self.piece_size)
-        self.rzpt = Image.open("Images/Pieces/r0.2.png")
-        self.rzpt = self.rzpt.resize(self.piece_size)
-        self.btpt = Image.open("Images/Pieces/b2.2.png")
-        self.btpt = self.btpt.resize(self.piece_size)
-        self.bzpt = Image.open("Images/Pieces/b0.2.png")
-        self.bzpt = self.bzpt.resize(self.piece_size)
-        self.bopt = Image.open("Images/Pieces/b1.2.png")
-        self.bopt = self.bopt.resize(self.piece_size)
-        self.bzpo = Image.open("Images/Pieces/b0.1.png")
-        self.bzpo = self.bzpo.resize(self.piece_size)
-        self.bopo = Image.open("Images/Pieces/b1.1.png")
-        self.bopo = self.bopo.resize(self.piece_size)
+        self.rtpt = None
+        self.rzpo = None
+        self.ropo = None
+        self.ropt = None
+        self.rzpt = None
+        self.btpt = None
+        self.bzpt = None
+        self.bopt = None
+        self.bzpo = None
+        self.bopo = None
+
+    def restart(self):
+        self.root.destroy()
 
     def board_on_click(self, i, j, event):
         if self.clicked_piece[0] != -1 and self.clicked_piece[1] != -1:
@@ -212,7 +232,6 @@ class GUI:
         self.root.geometry("1500x800")
         self.root.resizable(False, False)
         self.root.state("zoomed")
-
         self.rtpt = ImageTk.PhotoImage(self.rtpt)
         self.rzpo = ImageTk.PhotoImage(self.rzpo)
         self.rzpt = ImageTk.PhotoImage(self.rzpt)
@@ -225,6 +244,9 @@ class GUI:
         self.bopt = ImageTk.PhotoImage(self.bopt)
 
         self.main_board.place(relx=0.5, y=350, anchor="center")
+        self.restart_button.place(relx=0.1, rely=0.5)
+        self.moves.place(relx = 0.7, rely = 0.1)
+        self.moves.configure(state= "disabled")
         for i in range(8):
             for j in range(8):
                 if 6 <= i <= 7:
@@ -324,6 +346,8 @@ class GUI:
             self.blue.insert(piece, new_piece)
             self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.blue_locations[piece] = end
+            self.red_spots.append(self.blue_taken_spots[piece])
+            self.blue_taken_spots[piece] = -1
         else:
             previous_image = self.red[piece].cget("image")
             self.red[piece].destroy()
@@ -334,6 +358,8 @@ class GUI:
             self.red.insert(piece, new_piece)
             self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.red_locations[piece] = end
+            self.blue_spots.append(self.red_taken_spots[piece])
+            self.red_taken_spots[piece] = -1
 
     def make_deploy(self, side, piece, end):
         if side == "red":
@@ -346,6 +372,9 @@ class GUI:
             self.red.insert(piece, new_piece)
             self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.red_locations[piece] = end
+            if self.red_taken_spots[piece] != -1:
+                self.red_spots.append(self.red_taken_spots[piece])
+                self.red_taken_spots[piece] = -1
         else:
             previous_image = self.blue[piece].cget("image")
             self.blue[piece].destroy()
@@ -356,6 +385,9 @@ class GUI:
             self.blue.insert(piece, new_piece)
             self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
             self.blue_locations[piece] = end
+            if self.blue_taken_spots[piece] != -1:
+                self.blue_spots.append(self.blue_taken_spots[piece])
+                self.blue_taken_spots[piece] = -1
 
     def make_move(self, side, piece, end, CAPTURED):
         if side == "red":
@@ -474,20 +506,24 @@ class GUI:
             else:
                 self.red_locations[index] = (-1, -1)
         if side == "red":
+            spot = min(self.blue_spots)
+            self.blue_spots.remove(spot)
             if reverse_captured:
-                length = len([1 for i in range(16) if self.blue_locations[i] == (-1, -1)])
+                self.blue_taken_spots[index] = spot
             else:
-                length = len([1 for i in range(16) if self.red_locations[i] == (-1, -1)])
+                self.red_taken_spots[index] = spot
         else:
+            spot = min(self.red_spots)
+            self.red_spots.remove(spot)
             if reverse_captured:
-                length = len([1 for i in range(16) if self.red_locations[i] == (-1, -1)])
+                self.red_taken_spots[index] = spot
             else:
-                length = len([1 for i in range(16) if self.blue_locations[i] == (-1, -1)])
-        if length > 8:
-            length -= 8
-            new_piece.place(relx=0.126 * (length - 1), y=55)
+                self.blue_taken_spots[index] = spot
+        if spot > 7:
+            spot -= 8
+            new_piece.place(relx=0.126 * spot, y=55)
         else:
-            new_piece.place(relx=0.126 * (length - 1), y=0)
+            new_piece.place(relx=0.126 * spot, y=0)
 
     def game_won(self, side):
         if side == "red":
@@ -496,12 +532,5 @@ class GUI:
             Game_over = Label(self.root, text=f"GAME OVER BLUE WON!", height=25, width=50, font=500, bg="blue")
         Game_over.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.root.update()
-        time.sleep(3)
-        pls = Label(self.root, text="SIR CAN I PLEASE GET AN A*!!!", height = 25, width = 50, font = 500, bg = "yellow")
-        pls.place(relx=0.5, rely=0.5, anchor=CENTER)
-        self.root.update()
-        time.sleep(1)
-        pls.destroy()
-        self.root.update()
-        time.sleep(2)
+        time.sleep(5)
         quit()
