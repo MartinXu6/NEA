@@ -13,7 +13,6 @@ from random import randint
 def multi_players(colour):
     # colours = ["red", "blue", "green", "white"]
 
-
     while True:
         red_deployed_index = []
         red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
@@ -53,20 +52,21 @@ def multi_players(colour):
 
             if Game.current_move:
                 if colour == "red":
-                    gui.moves.configure(state ="normal")
-                    gui.moves.insert(INSERT,f"\n{Game.current_move[0][0]} has deployed {Game.current_move[1]} to position {Game.current_move[3]}")
                     gui.moves.configure(state="normal")
+                    gui.moves.insert(INSERT,
+                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                    gui.moves.configure(state="disable")
                 else:
-                    if Game.current_move[0] =="red":
+                    if Game.current_move[0] == "red":
                         gui.moves.configure(state="normal")
                         gui.moves.insert(INSERT,
-                                         f"\nb has deployed {Game.current_move[1]} to position {Game.current_move[3]}")
-                        gui.moves.configure(state="normal")
+                                         f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                        gui.moves.configure(state="disable")
                     else:
                         gui.moves.configure(state="normal")
                         gui.moves.insert(INSERT,
-                                         f"\nr has deployed {Game.current_move[1]} to position {Game.current_move[3]}")
-                        gui.moves.configure(state="normal")
+                                         f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                        gui.moves.configure(state="disable")
 
                 Game.current_move = []
             if len(red_deployed_index) == 16:
@@ -99,7 +99,23 @@ def multi_players(colour):
                 else:
                     gui.clicked_piece = (-1, -1)
             if Game.current_move:
-                print(Game.current_move)
+                if colour == "red":
+                    gui.moves.configure(state="normal")
+                    gui.moves.insert(INSERT,
+                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                    gui.moves.configure(state="disable")
+                else:
+                    if Game.current_move[0] == "red":
+                        gui.moves.configure(state="normal")
+                        gui.moves.insert(INSERT,
+                                         f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                        gui.moves.configure(state="disable")
+                    else:
+                        gui.moves.configure(state="normal")
+                        gui.moves.insert(INSERT,
+                                         f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                        gui.moves.configure(state="disable")
+
                 Game.current_move = []
             if len(blue_deployed_index) == 16:
                 break
@@ -244,7 +260,23 @@ def multi_players(colour):
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
-                print(Game.current_move)
+                if colour == "red":
+                    gui.moves.configure(state="normal")
+                    gui.moves.insert(INSERT,
+                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                    gui.moves.configure(state="disable")
+                else:
+                    if Game.current_move[0] == "red":
+                        gui.moves.configure(state="normal")
+                        gui.moves.insert(INSERT,
+                                         f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                        gui.moves.configure(state="disable")
+                    else:
+                        gui.moves.configure(state="normal")
+                        gui.moves.insert(INSERT,
+                                         f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                        gui.moves.configure(state="disable")
+
                 Game.current_move = []
 
             # blue move cycle
@@ -383,7 +415,23 @@ def multi_players(colour):
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
-                print(Game.current_move)
+                if colour == "red":
+                    gui.moves.configure(state="normal")
+                    gui.moves.insert(INSERT,
+                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                    gui.moves.configure(state="disable")
+                else:
+                    if Game.current_move[0] == "red":
+                        gui.moves.configure(state="normal")
+                        gui.moves.insert(INSERT,
+                                         f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                        gui.moves.configure(state="disable")
+                    else:
+                        gui.moves.configure(state="normal")
+                        gui.moves.insert(INSERT,
+                                         f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                        gui.moves.configure(state="disable")
+
                 Game.current_move = []
 
 
@@ -426,6 +474,12 @@ def single_player_red():
                             gui.destination = (-1, -1)
                 else:
                     gui.clicked_piece = (-1, -1)
+            if Game.current_move:
+                gui.moves.configure(state="normal")
+                gui.moves.insert(INSERT,
+                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.configure(state="disable")
+                Game.current_move = []
             if len(red_deployed_index) == 16:
                 break
         # blue deployment cycle
@@ -437,6 +491,12 @@ def single_player_red():
             blue_deployed_index.append(current_move[0])
             blue_deployable.remove(current_move[1])
             time.sleep(0.1)
+            if Game.current_move:
+                gui.moves.configure(state="normal")
+                gui.moves.insert(INSERT,
+                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.configure(state="disable")
+                Game.current_move = []
             if len(blue_deployed_index) == 16:
                 break
 
@@ -578,6 +638,12 @@ def single_player_red():
                         gui.displayed_pieces = []
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
+            if Game.current_move:
+                gui.moves.configure(state="normal")
+                gui.moves.insert(INSERT,
+                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.configure(state="disable")
+                Game.current_move = []
 
             # blue move cycle
             if Game.winner:
@@ -587,6 +653,13 @@ def single_player_red():
             current_move = Minimax.move_minimax(Game.board, gui.blue_locations, 4, "blue")
             Game.move(Game.blues[current_move[0]], current_move[1], "blue")
             gui.make_move("blue", current_move[0], current_move[1], 0)
+            if Game.current_move:
+                gui.moves.configure(state="normal")
+                gui.moves.insert(INSERT,
+                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.configure(state="disable")
+                Game.current_move = []
+
 
 def single_player_blue():
     # colours = ["red", "blue", "green", "white"]
@@ -609,6 +682,16 @@ def single_player_blue():
             blue_deployed_index.append(current_move[0])
             blue_deployable.remove(current_move[1])
             time.sleep(0.1)
+            if Game.current_move:
+                gui.moves.configure(state="normal")
+                if Game.current_move[0] == "red":
+                    gui.moves.insert(INSERT,
+                                     f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                else:
+                    gui.moves.insert(INSERT,
+                                     f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.configure(state="disable")
+                Game.current_move = []
             if len(blue_deployed_index) == 16:
                 break
         # red deployment cycle
@@ -637,6 +720,16 @@ def single_player_blue():
                             gui.destination = (-1, -1)
                 else:
                     gui.clicked_piece = (-1, -1)
+            if Game.current_move:
+                gui.moves.configure(state="normal")
+                if Game.current_move[0] == "red":
+                    gui.moves.insert(INSERT,
+                                     f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                else:
+                    gui.moves.insert(INSERT,
+                                     f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.configure(state="disable")
+                Game.current_move = []
             if len(red_deployed_index) == 16:
                 break
 
@@ -650,6 +743,17 @@ def single_player_blue():
             current_move = Minimax.move_minimax(Game.board, gui.blue_locations, 4, "blue")
             Game.move(Game.blues[current_move[0]], current_move[1], "blue")
             gui.make_move("blue", current_move[0], current_move[1], 0)
+
+            if Game.current_move:
+                gui.moves.configure(state="normal")
+                if Game.current_move[0] == "red":
+                    gui.moves.insert(INSERT,
+                                     f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                else:
+                    gui.moves.insert(INSERT,
+                                     f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.configure(state="disable")
+                Game.current_move = []
             # red move cycle
             if Game.winner:
                 gui.game_won(Game.winner)
@@ -786,6 +890,17 @@ def single_player_blue():
                         gui.displayed_pieces = []
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
+            if Game.current_move:
+                gui.moves.configure(state="normal")
+                if Game.current_move[0] == "red":
+                    gui.moves.insert(INSERT,
+                                     f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                else:
+                    gui.moves.insert(INSERT,
+                                     f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.configure(state="disable")
+                Game.current_move = []
+
 
 menu = View.start_menu()
 game_mode = ""
@@ -839,7 +954,6 @@ elif choosing.Side == "blue":
     gui.bopo = gui.bopo.resize(gui.piece_size)
 gui.initialise_GUI()
 Game = model.game()
-
 
 if menu.running == "multi":
     multi_players(choosing.Side)
