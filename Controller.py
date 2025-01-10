@@ -29,7 +29,8 @@ def multi_players(colour):
             if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                 if gui.clicked_piece[0] == "red" and gui.clicked_piece[1] not in red_deployed_index:
                     gui.red[gui.clicked_piece[1]].config(bg="black")
-                    gui.display_movable(red_deployable)
+                    if not gui.displayed_pieces:
+                        gui.display_movable(red_deployable)
                     if gui.destination != (-1, -1):
                         if Game.deploy(Game.reds[gui.clicked_piece[1]], gui.destination):
                             for i in gui.displayed_pieces:
@@ -77,7 +78,8 @@ def multi_players(colour):
             if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                 if gui.clicked_piece[0] == "blue" and gui.clicked_piece[1] not in blue_deployed_index:
                     gui.blue[gui.clicked_piece[1]].config(bg="black")
-                    gui.display_movable(blue_deployable)
+                    if not gui.displayed_pieces:
+                        gui.display_movable(blue_deployable)
                     if gui.destination != (-1, -1):
                         if Game.deploy(Game.blues[gui.clicked_piece[1]], gui.destination):
                             print(Game.current_move)
@@ -152,7 +154,8 @@ def multi_players(colour):
                             else:
                                 gui.blue[gui.clicked_piece[1]].config(bg="black")
                                 red_movable = Game.blues[gui.clicked_piece[1]].movable(Game.board)
-                        gui.display_movable(red_movable)
+                        if not gui.displayed_pieces:
+                            gui.display_movable(red_movable)
                         if gui.destination != (-1, -1):
                             current_piece = ""
                             location = ""
@@ -309,7 +312,8 @@ def multi_players(colour):
                             else:
                                 gui.red[gui.clicked_piece[1]].config(bg="black")
                                 blue_movable = Game.reds[gui.clicked_piece[1]].movable(Game.board)
-                        gui.display_movable(blue_movable)
+                        if not gui.displayed_pieces:
+                            gui.display_movable(blue_movable)
                         if gui.destination != (-1, -1):
                             current_piece = ""
                             location = ""
@@ -454,7 +458,8 @@ def single_player_red():
             if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                 if gui.clicked_piece[0] == "red" and gui.clicked_piece[1] not in red_deployed_index:
                     gui.red[gui.clicked_piece[1]].config(bg="black")
-                    gui.display_movable(red_deployable)
+                    if not gui.displayed_pieces:
+                        gui.display_movable(red_deployable)
                     if gui.destination != (-1, -1):
                         if Game.deploy(Game.reds[gui.clicked_piece[1]], gui.destination):
                             for i in gui.displayed_pieces:
@@ -532,7 +537,8 @@ def single_player_red():
                             else:
                                 gui.blue[gui.clicked_piece[1]].config(bg="black")
                                 red_movable = Game.blues[gui.clicked_piece[1]].movable(Game.board)
-                        gui.display_movable(red_movable)
+                        if not gui.displayed_pieces:
+                            gui.display_movable(red_movable)
                         if gui.destination != (-1, -1):
                             current_piece = ""
                             location = ""
@@ -700,7 +706,8 @@ def single_player_blue():
             if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                 if gui.clicked_piece[0] == "red" and gui.clicked_piece[1] not in red_deployed_index:
                     gui.red[gui.clicked_piece[1]].config(bg="black")
-                    gui.display_movable(red_deployable)
+                    if not gui.displayed_pieces:
+                        gui.display_movable(red_deployable)
                     if gui.destination != (-1, -1):
                         if Game.deploy(Game.reds[gui.clicked_piece[1]], gui.destination):
                             for i in gui.displayed_pieces:
@@ -784,7 +791,8 @@ def single_player_blue():
                             else:
                                 gui.blue[gui.clicked_piece[1]].config(bg="black")
                                 red_movable = Game.blues[gui.clicked_piece[1]].movable(Game.board)
-                        gui.display_movable(red_movable)
+                        if not gui.displayed_pieces:
+                            gui.display_movable(red_movable)
                         if gui.destination != (-1, -1):
                             current_piece = ""
                             location = ""
