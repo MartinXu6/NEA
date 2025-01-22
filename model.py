@@ -3,10 +3,11 @@ import copy
 
 
 class Piece:
-    def __init__(self, side, Type, location):
+    def __init__(self, side, Type, location,index):
         self.side = side
         self.type = Type
         self.location = location
+        self.index = index
 
     def movable(self, board):
         start = self.location
@@ -50,18 +51,18 @@ class game:
         # 2), (6, 7))], [Piece("red", (2, 2), (7, 0)), Piece("red", (2, 2), (7, 1)), Piece("red", (2, 2), (7, 2)),
         # Piece("red", (2, 2), (7, 3)), Piece("red", (2, 2), (7, 4)), Piece("red", (2, 2), (7, 5)), Piece("red", (2,
         # 2), (7, 6)), Piece("red", (2, 2), (7, 7))], ]
-        self.reds = [Piece("red", (2, 2), (-1, -1)), Piece("red", (2, 2), (-1, -1)), Piece("red", (2, 2), (-1, -1)),
-                     Piece("red", (2, 2), (-1, -1)), Piece("red", (2, 2), (-1, -1)), Piece("red", (2, 2), (-1, -1)),
-                     Piece("red", (2, 2), (-1, -1)), Piece("red", (2, 2), (-1, -1)), Piece("red", (0, 2), (-1, -1)),
-                     Piece("red", (0, 2), (-1, -1)), Piece("red", (0, 2), (-1, -1)), Piece("red", (0, 2), (-1, -1)),
-                     Piece("red", (1, 1), (-1, -1)), Piece("red", (1, 1), (-1, -1)), Piece("red", (1, 2), (-1, -1)),
-                     Piece("red", (0, 1), (-1, -1))]
-        self.blues = [Piece("blue", (2, 2), (-1, -1)), Piece("blue", (2, 2), (-1, -1)), Piece("blue", (2, 2), (-1, -1)),
-                      Piece("blue", (2, 2), (-1, -1)), Piece("blue", (2, 2), (-1, -1)), Piece("blue", (2, 2), (-1, -1)),
-                      Piece("blue", (2, 2), (-1, -1)), Piece("blue", (2, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)),
-                      Piece("blue", (0, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)), Piece("blue", (0, 2), (-1, -1)),
-                      Piece("blue", (1, 1), (-1, -1)), Piece("blue", (1, 1), (-1, -1)), Piece("blue", (1, 2), (-1, -1)),
-                      Piece("blue", (0, 1), (-1, -1))]
+        self.reds = [Piece("red", (2, 2), (-1, -1),0), Piece("red", (2, 2), (-1, -1),1), Piece("red", (2, 2), (-1, -1),2),
+                     Piece("red", (2, 2), (-1, -1),3), Piece("red", (2, 2), (-1, -1),4), Piece("red", (2, 2), (-1, -1),5),
+                     Piece("red", (2, 2), (-1, -1),6), Piece("red", (2, 2), (-1, -1),7), Piece("red", (0, 2), (-1, -1),8),
+                     Piece("red", (0, 2), (-1, -1),9), Piece("red", (0, 2), (-1, -1),10), Piece("red", (0, 2), (-1, -1),11),
+                     Piece("red", (1, 1), (-1, -1),12), Piece("red", (1, 1), (-1, -1),13), Piece("red", (1, 2), (-1, -1),14),
+                     Piece("red", (0, 1), (-1, -1),15)]
+        self.blues = [Piece("blue", (2, 2), (-1, -1),0), Piece("blue", (2, 2), (-1, -1),1), Piece("blue", (2, 2), (-1, -1),2),
+                      Piece("blue", (2, 2), (-1, -1),3), Piece("blue", (2, 2), (-1, -1),4), Piece("blue", (2, 2), (-1, -1),5),
+                      Piece("blue", (2, 2), (-1, -1),6), Piece("blue", (2, 2), (-1, -1),7), Piece("blue", (0, 2), (-1, -1),8),
+                      Piece("blue", (0, 2), (-1, -1),9), Piece("blue", (0, 2), (-1, -1),10), Piece("blue", (0, 2), (-1, -1),11),
+                      Piece("blue", (1, 1), (-1, -1),12), Piece("blue", (1, 1), (-1, -1),13), Piece("blue", (1, 2), (-1, -1),14),
+                      Piece("blue", (0, 1), (-1, -1),15)]
         self.deployed_reds = 0
         self.deployed_blues = 0
         # self.reds = []

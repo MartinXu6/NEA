@@ -482,7 +482,7 @@ def single_player_red():
             if Game.current_move:
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,
-                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                                 f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                 gui.moves.configure(state="disable")
                 Game.current_move = []
             if len(red_deployed_index) == 16:
@@ -499,7 +499,7 @@ def single_player_red():
             if Game.current_move:
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,
-                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                                 f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                 gui.moves.configure(state="disable")
                 Game.current_move = []
             if len(blue_deployed_index) == 16:
@@ -647,7 +647,7 @@ def single_player_red():
             if Game.current_move:
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,
-                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                                 f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                 gui.moves.configure(state="disable")
                 Game.current_move = []
 
@@ -656,13 +656,13 @@ def single_player_red():
                 gui.game_won(Game.winner)
                 break
             gui.root.update()
-            current_move = Minimax.move_minimax(Game.board, gui.blue_locations, 4, "blue")
-            Game.move(Game.blues[current_move[0]], current_move[1], "blue")
-            gui.make_move("blue", current_move[0], current_move[1], 0)
+            current_move = Minimax.move_minimax(Game.board, Game.blues, Game.reds, 2, "blue", None)
+            gui.make_move("blue", Game.board[current_move[0][0]][current_move[0][1]].index, current_move[1], 0)
+            Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,
-                                     f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                                 f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                 gui.moves.configure(state="disable")
                 Game.current_move = []
 
@@ -744,12 +744,15 @@ def single_player_blue():
         while True:
             # blue move cycle
             if Game.winner:
-                gui.game_won(Game.winner)
-                break
+                if Game.winner == "blue":
+                    gui.game_won("red")
+                    break
+                else:
+                    gui.game_won("blue")
             gui.root.update()
-            current_move = Minimax.move_minimax(Game.board, gui.blue_locations, 4, "blue")
-            Game.move(Game.blues[current_move[0]], current_move[1], "blue")
-            gui.make_move("blue", current_move[0], current_move[1], 0)
+            current_move = Minimax.move_minimax(Game.board, Game.blues, Game.reds, 2, "blue", None)
+            gui.make_move("blue", Game.board[current_move[0][0]][current_move[0][1]].index, current_move[1], 0)
+            Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
 
             if Game.current_move:
                 gui.moves.configure(state="normal")
@@ -763,8 +766,11 @@ def single_player_blue():
                 Game.current_move = []
             # red move cycle
             if Game.winner:
-                gui.game_won(Game.winner)
-                break
+                if Game.winner == "blue":
+                    gui.game_won("red")
+                    break
+                else:
+                    gui.game_won("blue")
             while True:
                 gui.root.update()
                 if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
