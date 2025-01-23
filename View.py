@@ -440,7 +440,7 @@ class GUI:
             new_label.place(relx=0.14 * place[1], rely=0.130 * place[0], )
             self.displayed_pieces.append(new_label)
 
-    def got_captured(self, side, index, captured, CAPTURED, reverse_captured):
+    def got_captured(self, side, index,reverse_captured):
         if side == "red":
             if 0 <= index <= 7:
                 new_image = self.btpt

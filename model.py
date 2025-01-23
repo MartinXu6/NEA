@@ -4,6 +4,7 @@ import copy
 
 class Piece:
     def __init__(self, side, Type, location,index):
+        self.origin = side
         self.side = side
         self.type = Type
         self.location = location

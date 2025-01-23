@@ -248,12 +248,12 @@ def multi_players(colour):
                                 if gui.capturing[2] == 0:
                                     gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
                                                   False)
-                                    gui.got_captured("blue", gui.captured[1], blue_got_captured, False,
+                                    gui.got_captured("blue", gui.captured[1],
                                                      reverse_captured)
                                 else:
                                     gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
                                                   True)
-                                    gui.got_captured("blue", gui.captured[1], blue_got_captured, True, reverse_captured)
+                                    gui.got_captured("blue", gui.captured[1], reverse_captured)
                                 gui.capturing = (-1, -1, 0)
                                 gui.captured = (-1, -1, 0)
                                 break
@@ -405,11 +405,11 @@ def multi_players(colour):
                                 if gui.capturing[2] == 0:
                                     gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
                                                   False)
-                                    gui.got_captured("red", gui.captured[1], red_got_captured, False, reverse_captured)
+                                    gui.got_captured("red", gui.captured[1],  reverse_captured)
                                 else:
                                     gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
                                                   True)
-                                    gui.got_captured("red", gui.captured[1], red_got_captured, True, reverse_captured)
+                                    gui.got_captured("red", gui.captured[1],  reverse_captured)
                                 gui.capturing = (-1, -1, 0)
                                 gui.captured = (-1, -1, 0)
                                 break
@@ -630,12 +630,12 @@ def single_player_red():
                                 if gui.capturing[2] == 0:
                                     gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
                                                   False)
-                                    gui.got_captured("blue", gui.captured[1], blue_got_captured, False,
+                                    gui.got_captured("blue", gui.captured[1],
                                                      reverse_captured)
                                 else:
                                     gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
                                                   True)
-                                    gui.got_captured("blue", gui.captured[1], blue_got_captured, True, reverse_captured)
+                                    gui.got_captured("blue", gui.captured[1], reverse_captured)
                                 gui.capturing = (-1, -1, 0)
                                 gui.captured = (-1, -1, 0)
                                 break
@@ -657,7 +657,21 @@ def single_player_red():
                 break
             gui.root.update()
             current_move = Minimax.move_minimax(Game.board, Game.blues, Game.reds, 2, "blue", None)
-            gui.make_move("blue", Game.board[current_move[0][0]][current_move[0][1]].index, current_move[1], 0)
+            start_piece = Game.board[current_move[0][0]][current_move[0][1]]
+            if start_piece.side == start_piece.origin:
+                gui.make_move("blue", start_piece.index, current_move[1], 0)
+            else:
+                gui.make_move("blue", start_piece.index, current_move[1], 1)
+
+            if Game.board[current_move[1][0]][current_move[1][1]] != 0:
+                end_piece = Game.board[current_move[1][0]][current_move[1][1]]
+                if end_piece.side == end_piece.origin:
+                    gui.red[end_piece.index].destroy()
+                    gui.got_captured("red", end_piece.index, False)
+                else:
+                    gui.blue[end_piece.index].destroy()
+                    gui.got_captured("red", end_piece.index, True)
+
             Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
                 gui.moves.configure(state="normal")
@@ -751,17 +765,26 @@ def single_player_blue():
                     gui.game_won("blue")
             gui.root.update()
             current_move = Minimax.move_minimax(Game.board, Game.blues, Game.reds, 2, "blue", None)
-            gui.make_move("blue", Game.board[current_move[0][0]][current_move[0][1]].index, current_move[1], 0)
-            Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
+            start_piece = Game.board[current_move[0][0]][current_move[0][1]]
+            if start_piece.side == start_piece.origin:
+                gui.make_move("blue", start_piece.index, current_move[1], 0)
+            else:
+                gui.make_move("blue", start_piece.index, current_move[1], 1)
 
+            if Game.board[current_move[1][0]][current_move[1][1]] != 0:
+                end_piece = Game.board[current_move[1][0]][current_move[1][1]]
+                if end_piece.side == end_piece.origin:
+                    gui.red[end_piece.index].destroy()
+                    gui.got_captured("red", end_piece.index, False)
+                else:
+                    gui.blue[end_piece.index].destroy()
+                    gui.got_captured("red", end_piece.index, True)
+
+            Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
                 gui.moves.configure(state="normal")
-                if Game.current_move[0] == "red":
-                    gui.moves.insert(INSERT,
-                                     f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
-                else:
-                    gui.moves.insert(INSERT,
-                                     f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                gui.moves.insert(INSERT,
+                                 f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                 gui.moves.configure(state="disable")
                 Game.current_move = []
             # red move cycle
@@ -890,12 +913,12 @@ def single_player_blue():
                                 if gui.capturing[2] == 0:
                                     gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
                                                   False)
-                                    gui.got_captured("blue", gui.captured[1], blue_got_captured, False,
+                                    gui.got_captured("blue", gui.captured[1],
                                                      reverse_captured)
                                 else:
                                     gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
                                                   True)
-                                    gui.got_captured("blue", gui.captured[1], blue_got_captured, True, reverse_captured)
+                                    gui.got_captured("blue", gui.captured[1], reverse_captured)
                                 gui.capturing = (-1, -1, 0)
                                 gui.captured = (-1, -1, 0)
                                 break
