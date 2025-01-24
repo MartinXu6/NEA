@@ -1,3 +1,4 @@
+import time
 from random import randint
 from copy import deepcopy
 
@@ -11,15 +12,34 @@ def evaluation(current_position, max_player):
                       [2, 3, 4, 4, 4, 4, 3, 2],
                       [2, 3, 3, 3, 3, 3, 3, 2],
                       [1, 2, 2, 2, 2, 2, 2, 1], ]
-    piece_value = {(2, 2): 5, (0, 2): 4, (1, 1): 3, (1, 2): 7, (0, 1): 1}
+    piece_value = {(2, 2): 5, (0, 2): 4, (1, 1): 3, (1, 2): 7,(0,1):1}
     total_value = 0
+    red_won = True
+    blue_won = False
     for line in range(8):
         for piece in range(8):
             if current_position[line][piece] != 0:
+                current_movable = current_position[line][piece].movable(current_position)
                 if current_position[line][piece].side == max_player:
+                    if current_position[line][piece].type == (0,1):
+                        red_won = False
+                    for move in current_movable:
+                        if current_position[move[0]][move[1]] != 0:
+                            if current_position[move[0]][move[1]].type == (0,1) and current_position[move[0]][move[1]].side != max_player:
+                                total_value += 99
                     total_value += piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
                 else:
+                    if current_position[line][piece].type == (0,1):
+                        blue_won = False
+                    for move in current_movable:
+                        if current_position[move[0]][move[1]] != 0:
+                            if current_position[move[0]][move[1]].type == (0,1) and current_position[move[0]][move[1]].side == max_player:
+                                total_value -= 99
                     total_value -= piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
+    if red_won:
+        total_value -= 99
+    if blue_won:
+        total_value += 99
     # for piece in bench:
     #     if piece.side == max_player:
     #         total_value += piece_value.get(piece)*10
@@ -38,6 +58,8 @@ def get_all_moves(current_position, player):
                     ends = current_piece.movable(current_position)
                     all_moves[(row,col)] = ends
     return all_moves
+def get_all_deploys(bench, player):
+    return
 
 
 def deploy_minimax(current_position, deployable, deployed_index, depth, current_player):
@@ -48,17 +70,21 @@ def deploy_minimax(current_position, deployable, deployed_index, depth, current_
 
 
 def move_minimax(current_position, max_pieces, min_pieces, depth, current_player, previous_move):
-    # bench = [piece for piece in max_pieces + min_pieces if piece.location == (-1, -1)]
+    bench = [piece for piece in max_pieces + min_pieces if piece.location == (-1, -1)]
     if depth == 0:
         return [evaluation(current_position,"blue"), previous_move]
     all_moves = get_all_moves(current_position,current_player)
     all_positions = []
     all_root_moves = []
+    winning_move = False
     for piece in all_moves:
         piece_moves = all_moves.get(piece)
         for move in piece_moves:
             new_position = deepcopy(current_position)
             current_piece = new_position[piece[0]][piece[1]]
+            if new_position[move[0]][move[1]] != 0:
+                if new_position[move[0]][move[1]].type == (0,1):
+                    winning_move = (piece,move)
             new_position[move[0]][move[1]] = current_piece
             new_position[piece[0]][piece[1]] = 0
             new_position[move[0]][move[1]].location = (move[0], move[1])
@@ -66,17 +92,20 @@ def move_minimax(current_position, max_pieces, min_pieces, depth, current_player
             all_root_moves.append((piece,move))
     if depth != 2:
         if current_player == "blue":
-            evals = [move_minimax(all_positions[position],max_pieces,min_pieces,depth-1,"red",all_root_moves[position]) for position in range(len(all_positions))]
+            evals = [move_minimax(all_positions[position],min_pieces,max_pieces,depth-1,"red",all_root_moves[position]) for position in range(len(all_positions))]
             max_eval = max(evals, key=lambda x:x[0])
             max_eval[1] = previous_move
             return max_eval
         else:
-            evals = [move_minimax(all_positions[position],max_pieces,min_pieces,depth-1,"blue",all_root_moves[position]) for position in range(len(all_positions))]
+            evals = [move_minimax(all_positions[position],min_pieces,max_pieces,depth-1,"blue",all_root_moves[position]) for position in range(len(all_positions))]
             min_eval = min(evals, key=lambda  x:x[0])
             min_eval[1] = previous_move
             return min_eval
     else:
-        evals = [move_minimax(all_positions[position],max_pieces,min_pieces,depth-1,"red",all_root_moves[position]) for position in range(len(all_positions))]
+        if winning_move:
+            time.sleep(0.5)
+            return winning_move
+        evals = [move_minimax(all_positions[position],min_pieces,max_pieces, depth-1,"red",all_root_moves[position]) for position in range(len(all_positions))]
         max_eval = max(evals, key=lambda x:x[0])
         return max_eval[1]
 

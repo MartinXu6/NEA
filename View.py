@@ -527,10 +527,10 @@ class GUI:
 
     def game_won(self, side):
         if side == "red":
-            Game_over = Label(self.root, text=f"GAME OVER RED WON!", height=25, width=50, font=500, bg="red")
+            Game_over = Label(self.root, text=f"GAME OVER RED WON!", height=10, width=20, font=50, bg="red")
         else:
-            Game_over = Label(self.root, text=f"GAME OVER BLUE WON!", height=25, width=50, font=500, bg="blue")
-        Game_over.place(relx=0.5, rely=0.5, anchor=CENTER)
+            Game_over = Label(self.root, text=f"GAME OVER BLUE WON!", height=10, width=20, font=50, bg="blue")
+        Game_over.place(relx=0.1, rely=0.2, anchor=CENTER)
         self.root.update()
         time.sleep(5)
         quit()

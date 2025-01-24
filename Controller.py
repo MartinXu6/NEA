@@ -175,7 +175,6 @@ def multi_players(colour):
                                             for i in gui.displayed_pieces:
                                                 i.destroy()
                                                 gui.displayed_pieces = []
-                                            print(Game.current_move)
                                             gui.captured_deploy("red", gui.clicked_piece[1], gui.destination)
                                             gui.destination = (-1, -1)
                                             gui.clicked_piece = (-1, -1, 0)

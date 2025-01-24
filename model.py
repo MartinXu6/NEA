@@ -82,7 +82,7 @@ class game:
             return False
 
     def game_won(self, side):
-        print(f"{side} has won!")
+        pass
 
     def deploy(self, piece, end):
         moved = False
