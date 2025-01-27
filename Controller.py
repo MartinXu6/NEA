@@ -772,22 +772,30 @@ def single_player_blue():
                     gui.game_won("blue")
             gui.root.update()
             current_move = Minimax.move_minimax(Game.board, Game.blues, Game.reds, 2, "blue", None)
-            start_piece = Game.board[current_move[0][0]][current_move[0][1]]
-            if start_piece.side == start_piece.origin:
-                gui.make_move("blue", start_piece.index, current_move[1], 0)
-            else:
-                gui.make_move("blue", start_piece.index, current_move[1], 1)
-
-            if Game.board[current_move[1][0]][current_move[1][1]] != 0:
-                end_piece = Game.board[current_move[1][0]][current_move[1][1]]
-                if end_piece.side == end_piece.origin:
-                    gui.red[end_piece.index].destroy()
-                    gui.got_captured("red", end_piece.index, False)
+            if current_move[1] == "blue":
+                if current_move[0] == "blue":
+                    gui.make_deploy("blue",current_move[2], current_move[3])
+                    Game.move(Game.blues[current_move[2]],current_move[3], "blue")
                 else:
-                    gui.blue[end_piece.index].destroy()
-                    gui.got_captured("red", end_piece.index, True)
+                    gui.captured_deploy("blue", current_move[2], current_move[3])
+                    Game.move(Game.reds[current_move[2]],current_move[3], "blue")
+            else:
+                start_piece = Game.board[current_move[0][0]][current_move[0][1]]
+                if start_piece.side == start_piece.origin:
+                    gui.make_move("blue", start_piece.index, current_move[1], 0)
+                else:
+                    gui.make_move("blue", start_piece.index, current_move[1], 1)
 
-            Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
+                if Game.board[current_move[1][0]][current_move[1][1]] != 0:
+                    end_piece = Game.board[current_move[1][0]][current_move[1][1]]
+                    if end_piece.side == end_piece.origin:
+                        gui.red[end_piece.index].destroy()
+                        gui.got_captured("red", end_piece.index, False)
+                    else:
+                        gui.blue[end_piece.index].destroy()
+                        gui.got_captured("red", end_piece.index, True)
+
+                Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,

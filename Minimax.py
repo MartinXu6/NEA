@@ -27,7 +27,7 @@ def evaluation(current_position,max_player):
                         if current_position[move[0]][move[1]] != 0:
                             if current_position[move[0]][move[1]].type == (0, 1) and current_position[move[0]][
                                 move[1]].side != max_player:
-                                total_value += 99
+                                total_value += 999
                     total_value += piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
                 else:
                     if current_position[line][piece].type == (0, 1):
@@ -36,12 +36,12 @@ def evaluation(current_position,max_player):
                         if current_position[move[0]][move[1]] != 0:
                             if current_position[move[0]][move[1]].type == (0, 1) and current_position[move[0]][
                                 move[1]].side == max_player:
-                                total_value -= 99
+                                total_value -= 999
                     total_value -= piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
     if red_won:
-        total_value -= 99
+        total_value -= 999
     if blue_won:
-        total_value += 99
+        total_value += 999
     return total_value
 
 
@@ -76,7 +76,7 @@ def deploy_minimax(current_position, deployable, deployed_index, depth, current_
 def move_minimax(current_position, current_pieces, opposition_pieces, depth, current_player, previous_move):
     new_current_pieces = deepcopy(current_pieces)
     new_opposition_pieces = deepcopy(opposition_pieces)
-    bench = [piece for piece in new_current_pieces + new_opposition_pieces if piece.location == (-1, -1)]
+    # bench = [piece for piece in new_current_pieces + new_opposition_pieces if piece.location == (-1, -1)]
     if depth == 0:
         return [evaluation(current_position, "blue"), previous_move]
     all_moves = get_all_moves(current_position, current_player)
