@@ -3,7 +3,7 @@ import socket
 host = "iphone"
 port = 5000
 
-client_socket = socket.socket()
+client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_socket.connect((host,port))
 print(f"connected to server at{host}:{port} ")
 while True:
