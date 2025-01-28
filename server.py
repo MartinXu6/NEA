@@ -1,7 +1,7 @@
 import socket
 
-server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host = "0.0.0.0"
+server_socket = socket.socket()
+host = socket.gethostname()
 port = 5000
 server_socket.bind((host, port))
 print(f"Server started. Listening on {host}:{port}")
