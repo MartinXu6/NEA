@@ -1,9 +1,9 @@
 import socket
 
-server_socket = socket.socket()
+server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host = socket.gethostname()
 port = 5000
-server_socket.bind((host, port))
+server_socket.bind(("", port))
 print(f"Server started. Listening on {host}:{port}")
 server_socket.listen(5)
 print("Waiting for clients to connect...")
