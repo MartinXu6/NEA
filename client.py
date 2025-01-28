@@ -12,6 +12,6 @@ while True:
         print("disconnected")
         break
     print("server said",message)
-    response = input("Enter your response").encode("uft-8")
+    response = input("Enter your response").encode("utf-8")
     client_socket.send(response)
 client_socket.close()
