@@ -1,10 +1,11 @@
 import socket
 
-host = "local host"
+host = "192.168.24.10"
 port = 5000
 
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-client_socket.connect(("127.0.0.1",port))
+client_socket.connect((host,port))
+print(f"connected to server at{host}:{port} ")
 while True:
     message = client_socket.recv(1024)
     if message == "EXIT":
