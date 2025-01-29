@@ -15,7 +15,7 @@ print("Waiting for clients to connect...")
 zeroconf = Zeroconf()
 service_info = ServiceInfo(
     "_http._tcp.local.",
-    "MessageServer1._http._tcp.local.",
+    "MessageServer2._http._tcp.local.",
     addresses=[socket.inet_aton(local_IP)],
     port=5000,
     properties={},

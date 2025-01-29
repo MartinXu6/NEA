@@ -54,6 +54,8 @@ class GUI:
     def __init__(self):
         self.root = Tk()
         self.main_board = Frame(self.root, bg="black", bd=0, width=440, height=440)
+        self.horizontal_cords = Frame(self.root, width=457, height=20)
+        self.vertical_cords = Frame(self.root, width=20, height=457)
         self.restart_button = Button(self.root, bg="yellow", text="QUIT", width=20, height=10, command=self.restart)
         self.moves = st.ScrolledText(self.root,width= 50,height = 20,)
         self.red_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
@@ -243,10 +245,18 @@ class GUI:
         self.bopo = ImageTk.PhotoImage(self.bopo)
         self.bopt = ImageTk.PhotoImage(self.bopt)
 
-        self.main_board.place(relx=0.5, y=350, anchor="center")
+        self.main_board.place(relx=0.5, y=340, anchor="center")
+        self.horizontal_cords.place(relx= 0.5, y = 580, anchor = "center")
+        self.vertical_cords.place(rely = 0.488, x = 400, anchor = "center")
         self.restart_button.place(relx=0.1, rely=0.5)
         self.moves.place(relx = 0.7, rely = 0.1)
         self.moves.configure(state= "disabled")
+        for i in range(8):
+            square = Label(self.horizontal_cords, height=1, width=7,text=str(i))
+            square.place(relx= i*0.126,anchor = "nw")
+        for i in range(8):
+            square = Label(self.vertical_cords, height=3, width=2,text=str(i))
+            square.place(rely = i*0.126, anchor = "nw")
         for i in range(8):
             for j in range(8):
                 if 6 <= i <= 7:

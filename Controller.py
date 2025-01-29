@@ -1,5 +1,4 @@
 import time
-
 import View
 import model
 import Minimax
