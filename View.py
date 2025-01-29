@@ -247,7 +247,7 @@ class GUI:
 
         self.main_board.place(relx=0.5, y=340, anchor="center")
         self.horizontal_cords.place(relx= 0.5, y = 580, anchor = "center")
-        self.vertical_cords.place(rely = 0.488, x = 400, anchor = "center")
+        self.vertical_cords.place(rely = 0.488, relx = 0.31, anchor = "center")
         self.restart_button.place(relx=0.1, rely=0.5)
         self.moves.place(relx = 0.7, rely = 0.1)
         self.moves.configure(state= "disabled")
