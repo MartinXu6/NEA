@@ -15,7 +15,7 @@ print("Waiting for clients to connect...")
 zeroconf = Zeroconf()
 service_info = ServiceInfo(
     "_http._tcp.local.",
-    "MessageServer._http._tcp.local.",
+    "MessageServer1._http._tcp.local.",
     addresses=[socket.inet_aton(local_IP)],
     port=5000,
     properties={},
@@ -24,6 +24,7 @@ service_info = ServiceInfo(
 )
 zeroconf.register_service(service_info)
 print(f"service registered as 'messageserver' on {local_IP}:5000")
+
 
 client_socket, client_address = server_socket.accept()
 print(f"Client connected from {client_address}")
