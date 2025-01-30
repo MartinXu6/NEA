@@ -11,7 +11,7 @@ from random import randint
 
 def multi_players(colour):
     # colours = ["red", "blue", "green", "white"]
-
+    gui.mover_display.config(bg=colour)
     while True:
         red_deployed_index = []
         red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
@@ -70,6 +70,9 @@ def multi_players(colour):
 
                 Game.current_move = []
             if len(red_deployed_index) == 16:
+                previous_colour = gui.mover_display.cget("bg")
+                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                    bg="blue")
                 break
         # blue deployment cycle
         while True:
@@ -119,6 +122,9 @@ def multi_players(colour):
 
                 Game.current_move = []
             if len(blue_deployed_index) == 16:
+                previous_colour = gui.mover_display.cget("bg")
+                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                    bg="blue")
                 break
 
         Game.deployed = True
@@ -185,6 +191,10 @@ def multi_players(colour):
                                                 i.destroy()
                                                 gui.displayed_pieces = []
                                             gui.make_deploy("red", gui.clicked_piece[1], gui.destination)
+                                            previous_colour = gui.mover_display.cget("bg")
+                                            gui.mover_display.config(
+                                                bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                                                bg="blue")
                                             gui.destination = (-1, -1)
                                             gui.clicked_piece = (-1, -1, 0)
                                             break
@@ -342,6 +352,10 @@ def multi_players(colour):
                                                 i.destroy()
                                                 gui.displayed_pieces = []
                                             gui.make_deploy("blue", gui.clicked_piece[1], gui.destination)
+                                            previous_colour = gui.mover_display.cget("bg")
+                                            gui.mover_display.config(
+                                                bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                                                bg="blue")
                                             gui.destination = (-1, -1)
                                             gui.clicked_piece = (-1, -1, 0)
                                             break
@@ -439,7 +453,7 @@ def multi_players(colour):
 
 def single_player_red():
     # colours = ["red", "blue", "green", "white"]
-
+    gui.mover_display.config(bg="red")
     while True:
         red_deployed_index = []
         red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
@@ -484,6 +498,9 @@ def single_player_red():
                 gui.moves.configure(state="disable")
                 Game.current_move = []
             if len(red_deployed_index) == 16:
+                previous_colour = gui.mover_display.cget("bg")
+                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                    bg="blue")
                 break
         # blue deployment cycle
         while True:
@@ -501,6 +518,9 @@ def single_player_red():
                 gui.moves.configure(state="disable")
                 Game.current_move = []
             if len(blue_deployed_index) == 16:
+                previous_colour = gui.mover_display.cget("bg")
+                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                    bg="blue")
                 break
 
         Game.deployed = True
@@ -567,6 +587,10 @@ def single_player_red():
                                                 i.destroy()
                                                 gui.displayed_pieces = []
                                             gui.make_deploy("red", gui.clicked_piece[1], gui.destination)
+                                            previous_colour = gui.mover_display.cget("bg")
+                                            gui.mover_display.config(
+                                                bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                                                bg="blue")
                                             gui.destination = (-1, -1)
                                             gui.clicked_piece = (-1, -1, 0)
                                             break
@@ -658,6 +682,9 @@ def single_player_red():
             if current_move[1] == "blue":
                 if current_move[0] == "blue":
                     gui.make_deploy("blue",current_move[2], current_move[3])
+                    previous_colour = gui.mover_display.cget("bg")
+                    gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                        bg="blue")
                     Game.move(Game.blues[current_move[2]],current_move[3], "blue")
                 else:
                     gui.captured_deploy("blue", current_move[2], current_move[3])
@@ -689,7 +716,7 @@ def single_player_red():
 
 def single_player_blue():
     # colours = ["red", "blue", "green", "white"]
-
+    gui.mover_display.config(bg="red")
     while True:
         red_deployed_index = []
         red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
@@ -719,6 +746,9 @@ def single_player_blue():
                 gui.moves.configure(state="disable")
                 Game.current_move = []
             if len(blue_deployed_index) == 16:
+                previous_colour = gui.mover_display.cget("bg")
+                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                    bg="blue")
                 break
         # red deployment cycle
         while True:
@@ -758,6 +788,9 @@ def single_player_blue():
                 gui.moves.configure(state="disable")
                 Game.current_move = []
             if len(red_deployed_index) == 16:
+                previous_colour = gui.mover_display.cget("bg")
+                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                    bg="blue")
                 break
 
         Game.deployed = True
@@ -774,6 +807,9 @@ def single_player_blue():
             if current_move[1] == "blue":
                 if current_move[0] == "blue":
                     gui.make_deploy("blue",current_move[2], current_move[3])
+                    previous_colour = gui.mover_display.cget("bg")
+                    gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                        bg="blue")
                     Game.move(Game.blues[current_move[2]],current_move[3], "blue")
                 else:
                     gui.captured_deploy("blue", current_move[2], current_move[3])
@@ -866,6 +902,10 @@ def single_player_blue():
                                                 i.destroy()
                                                 gui.displayed_pieces = []
                                             gui.make_deploy("red", gui.clicked_piece[1], gui.destination)
+                                            previous_colour = gui.mover_display.cget("bg")
+                                            gui.mover_display.config(
+                                                bg="red") if previous_colour == "blue" else gui.mover_display.config(
+                                                bg="blue")
                                             gui.destination = (-1, -1)
                                             gui.clicked_piece = (-1, -1, 0)
                                             break

@@ -56,6 +56,7 @@ class GUI:
         self.main_board = Frame(self.root, bg="black", bd=0, width=440, height=440)
         self.horizontal_cords = Frame(self.root, width=457, height=20)
         self.vertical_cords = Frame(self.root, width=20, height=457)
+        self.mover_display = Label(self.root, width=10, height= 30,bg= "white")
         self.restart_button = Button(self.root, bg="yellow", text="QUIT", width=20, height=10, command=self.restart)
         self.moves = st.ScrolledText(self.root,width= 50,height = 20,)
         self.red_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
@@ -249,6 +250,7 @@ class GUI:
         self.horizontal_cords.place(relx= 0.5, y = 580, anchor = "center")
         self.vertical_cords.place(rely = 0.488, relx = 0.31, anchor = "center")
         self.restart_button.place(relx=0.1, rely=0.5)
+        self.mover_display.place(relx = 0.24, rely = 0.17, anchor = "nw")
         self.moves.place(relx = 0.7, rely = 0.1)
         self.moves.configure(state= "disabled")
         for i in range(8):
@@ -346,6 +348,8 @@ class GUI:
         # blue[15].place(relx=0 * 0.126, y=0)
 
     def captured_deploy(self, side, piece, end):
+        previous_colour = self.mover_display.cget("bg")
+        self.mover_display.config(bg="red") if previous_colour == "blue" else self.mover_display.config(bg="blue")
         if side == "red":
             previous_image = self.blue[piece].cget("image")
             self.blue[piece].destroy()
@@ -400,6 +404,8 @@ class GUI:
                 self.blue_taken_spots[piece] = -1
 
     def make_move(self, side, piece, end, CAPTURED):
+        previous_colour = self.mover_display.cget("bg")
+        self.mover_display.config(bg="red") if previous_colour == "blue" else self.mover_display.config(bg="blue")
         if side == "red":
             if CAPTURED == 0:
                 previous_image = self.red[piece].cget("image")
