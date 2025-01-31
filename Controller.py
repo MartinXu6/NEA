@@ -12,6 +12,11 @@ from random import randint
 def multi_players(colour):
     # colours = ["red", "blue", "green", "white"]
     gui.mover_display.config(bg=colour)
+    if colour == "blue":
+        gui.evaluation_red.config(bg="blue")
+        gui.evaluation_blue.config(bg="red")
+        gui.evaluation_red_text.config(text="Blue: 0.5")
+        gui.evaluation_blue_text.config(text="Red: 0.5")
     while True:
         red_deployed_index = []
         red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
@@ -271,6 +276,25 @@ def multi_players(colour):
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
+                eval_red = Minimax.evaluation(Game.board, "red")
+                eval_blue = Minimax.evaluation(Game.board, "blue")
+                if eval_red < 1:
+                    eval_blue -= eval_red
+                    eval_red = 1
+                if eval_blue < 1:
+                    eval_red -= eval_blue
+                    eval_blue = 1
+                total = eval_red + eval_blue
+                red_width = eval_red/total
+                blue_width = eval_blue/total
+                if colour == "blue":
+                    gui.evaluation_red_text.config(text=f"Blue: {round(red_width,2)}")
+                    gui.evaluation_blue_text.config(text=f"Red: {round(blue_width,2)}")
+                else:
+                    gui.evaluation_red_text.config(text=f"Red: {round(red_width,2)}")
+                    gui.evaluation_blue_text.config(text=f"Blue: {round(blue_width,2)}")
+                gui.evaluation_red.config(width=395*red_width)
+                gui.evaluation_blue.config(width=395*blue_width)
                 if colour == "red":
                     gui.moves.configure(state="normal")
                     gui.moves.insert(INSERT,
@@ -431,6 +455,25 @@ def multi_players(colour):
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
+                eval_red = Minimax.evaluation(Game.board, "red")
+                eval_blue = Minimax.evaluation(Game.board, "blue")
+                if eval_red < 1:
+                    eval_blue -= eval_red
+                    eval_red = 1
+                if eval_blue < 1:
+                    eval_red -= eval_blue
+                    eval_blue = 1
+                total = eval_red + eval_blue
+                red_width = eval_red / total
+                blue_width = eval_blue / total
+                if colour == "blue":
+                    gui.evaluation_red_text.config(text=f"Blue: {round(red_width,2)}")
+                    gui.evaluation_blue_text.config(text=f"Red: {round(blue_width,2)}")
+                else:
+                    gui.evaluation_red_text.config(text=f"Red: {round(red_width,2)}")
+                    gui.evaluation_blue_text.config(text=f"Blue: {round(blue_width,2)}")
+                gui.evaluation_red.config(width=395 * red_width)
+                gui.evaluation_blue.config(width=395 * blue_width)
                 if colour == "red":
                     gui.moves.configure(state="normal")
                     gui.moves.insert(INSERT,
@@ -667,6 +710,21 @@ def single_player_red():
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
+                eval_red = Minimax.evaluation(Game.board, "red")
+                eval_blue = Minimax.evaluation(Game.board, "blue")
+                if eval_red < 1:
+                    eval_blue -= eval_red
+                    eval_red = 1
+                if eval_blue < 1:
+                    eval_red -= eval_blue
+                    eval_blue = 1
+                total = eval_red + eval_blue
+                red_width = eval_red / total
+                blue_width = eval_blue / total
+                gui.evaluation_red_text.config(text=f"Red: {round(red_width,2)}")
+                gui.evaluation_blue_text.config(text=f"Blue: {round(blue_width,2)}")
+                gui.evaluation_red.config(width=395 * red_width)
+                gui.evaluation_blue.config(width=395 * blue_width)
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,
                                  f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
@@ -707,6 +765,21 @@ def single_player_red():
 
                 Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
+                eval_red = Minimax.evaluation(Game.board, "red")
+                eval_blue = Minimax.evaluation(Game.board, "blue")
+                if eval_red < 1:
+                    eval_blue -= eval_red
+                    eval_red = 1
+                if eval_blue < 1:
+                    eval_red -= eval_blue
+                    eval_blue = 1
+                total = eval_red + eval_blue
+                red_width = eval_red / total
+                blue_width = eval_blue / total
+                gui.evaluation_red_text.config(text=f"Red: {round(red_width,2)}")
+                gui.evaluation_blue_text.config(text=f"Blue: {round(blue_width,2)}")
+                gui.evaluation_red.config(width=395 * red_width)
+                gui.evaluation_blue.config(width=395 * blue_width)
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,
                                  f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
@@ -717,6 +790,10 @@ def single_player_red():
 def single_player_blue():
     # colours = ["red", "blue", "green", "white"]
     gui.mover_display.config(bg="red")
+    gui.evaluation_red.config(bg="blue")
+    gui.evaluation_blue.config(bg="red")
+    gui.evaluation_red_text.config(text="Blue: 0.5")
+    gui.evaluation_blue_text.config(text="Red: 0.5")
     while True:
         red_deployed_index = []
         red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
@@ -832,6 +909,21 @@ def single_player_blue():
 
                 Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
+                eval_red = Minimax.evaluation(Game.board, "red")
+                eval_blue = Minimax.evaluation(Game.board, "blue")
+                if eval_red < 1:
+                    eval_blue -= eval_red
+                    eval_red = 1
+                if eval_blue < 1:
+                    eval_red -= eval_blue
+                    eval_blue = 1
+                total = eval_red + eval_blue
+                red_width = eval_red / total
+                blue_width = eval_blue / total
+                gui.evaluation_red_text.config(text=f"Blue: {round(red_width,2)}")
+                gui.evaluation_blue_text.config(text=f"Red: {round(blue_width,2)}")
+                gui.evaluation_red.config(width=395 * red_width)
+                gui.evaluation_blue.config(width=395 * blue_width)
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,
                                  f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
@@ -982,6 +1074,21 @@ def single_player_blue():
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
+                eval_red = Minimax.evaluation(Game.board, "red")
+                eval_blue = Minimax.evaluation(Game.board, "blue")
+                if eval_red < 1:
+                    eval_blue -= eval_red
+                    eval_red = 1
+                if eval_blue < 1:
+                    eval_red -= eval_blue
+                    eval_blue = 1
+                total = eval_red + eval_blue
+                red_width = eval_red / total
+                blue_width = eval_blue / total
+                gui.evaluation_red_text.config(text=f"Blue: {round(red_width,2)}")
+                gui.evaluation_blue_text.config(text=f"Red: {round(blue_width,2)}")
+                gui.evaluation_red.config(width=395 * red_width)
+                gui.evaluation_blue.config(width=395 * blue_width)
                 gui.moves.configure(state="normal")
                 if Game.current_move[0] == "red":
                     gui.moves.insert(INSERT,

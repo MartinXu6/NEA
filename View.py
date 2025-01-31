@@ -54,10 +54,16 @@ class GUI:
     def __init__(self):
         self.root = Tk()
         self.main_board = Frame(self.root, bg="black", bd=0, width=440, height=440)
+        self.evaluation = Label(self.root, width=55, height=3,text="Current Evaluation", bg="grey" )
+        self.evaluation_red_text = Label(self.root, width=10, height=1,text="Red: 0.5" )
+        self.evaluation_blue_text = Label(self.root, width=10, height = 1, text = "Blue: 0.5")
+        self.evaluation_bar = Frame(self.root,width=395, height = 50)
+        self.evaluation_red = Frame(self.evaluation_bar,width=395/2, height=50, bg="red")
+        self.evaluation_blue = Frame(self.evaluation_bar,width= 395/2, height = 50, bg="blue")
         self.horizontal_cords = Frame(self.root, width=457, height=20)
         self.vertical_cords = Frame(self.root, width=20, height=457)
         self.mover_display = Label(self.root, width=10, height= 30,bg= "white")
-        self.restart_button = Button(self.root, bg="yellow", text="QUIT", width=20, height=10, command=self.restart)
+        self.quit_button = Button(self.root, bg="yellow", text="QUIT", width=20, height=10, command=self.quit)
         self.moves = st.ScrolledText(self.root,width= 50,height = 20,)
         self.red_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
         self.blue_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
@@ -89,8 +95,9 @@ class GUI:
         self.bzpo = None
         self.bopo = None
 
-    def restart(self):
+    def quit(self):
         self.root.destroy()
+
 
     def board_on_click(self, i, j, event):
         if self.clicked_piece[0] != -1 and self.clicked_piece[1] != -1:
@@ -247,11 +254,17 @@ class GUI:
         self.bopt = ImageTk.PhotoImage(self.bopt)
 
         self.main_board.place(relx=0.5, y=340, anchor="center")
+        self.evaluation_bar.place(relx = 0.69, y = 290)
+        self.evaluation_red_text.place(relx = 0.69, y= 265)
+        self.evaluation_blue_text.place(relx = 0.93, y = 265)
+        self.evaluation_red.place(relx=0)
+        self.evaluation_blue.place(relx=1, anchor = "ne")
+        self.evaluation.place(relx=0.69, y= 210)
         self.horizontal_cords.place(relx= 0.5, y = 580, anchor = "center")
-        self.vertical_cords.place(rely = 0.488, relx = 0.31, anchor = "center")
-        self.restart_button.place(relx=0.1, rely=0.5)
-        self.mover_display.place(relx = 0.24, rely = 0.17, anchor = "nw")
-        self.moves.place(relx = 0.7, rely = 0.1)
+        self.vertical_cords.place(y=340, relx = 0.31, anchor = "center")
+        self.quit_button.place(relx=0.1, rely=0.5)
+        self.mover_display.place(relx = 0.24, y = 115, anchor = "nw")
+        self.moves.place(relx = 0.69, rely = 0.5)
         self.moves.configure(state= "disabled")
         for i in range(8):
             square = Label(self.horizontal_cords, height=1, width=7,text=str(i))
@@ -546,6 +559,7 @@ class GUI:
             Game_over = Label(self.root, text=f"GAME OVER RED WON!", height=10, width=20, font=50, bg="red")
         else:
             Game_over = Label(self.root, text=f"GAME OVER BLUE WON!", height=10, width=20, font=50, bg="blue")
+        print(self.moves.get('1.0', END))
         Game_over.place(relx=0.1, rely=0.2, anchor=CENTER)
         self.root.update()
         time.sleep(5)

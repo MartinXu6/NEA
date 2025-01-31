@@ -131,7 +131,6 @@ def move_minimax(current_position, current_pieces, opposition_pieces, depth, cur
             return min_eval
     else:
         if winning_move:
-            time.sleep(0.5)
             return winning_move
         evals = [
             move_minimax(all_positions[position], new_opposition_pieces, new_current_pieces, depth - 1, "red",
