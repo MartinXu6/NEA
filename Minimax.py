@@ -27,7 +27,7 @@ def evaluation(current_position,max_player):
                         if current_position[move[0]][move[1]] != 0:
                             if current_position[move[0]][move[1]].type == (0, 1) and current_position[move[0]][
                                 move[1]].side != max_player:
-                                total_value += 999
+                                total_value += 20
                     total_value += piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
                 else:
                     if current_position[line][piece].type == (0, 1):
@@ -36,7 +36,7 @@ def evaluation(current_position,max_player):
                         if current_position[move[0]][move[1]] != 0:
                             if current_position[move[0]][move[1]].type == (0, 1) and current_position[move[0]][
                                 move[1]].side == max_player:
-                                total_value -= 999
+                                total_value -= 20
                     total_value -= piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
     if red_won:
         total_value -= 999

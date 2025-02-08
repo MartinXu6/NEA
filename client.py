@@ -10,8 +10,8 @@ class ServerDiscovery:
 
     def on_service_state_change(self, zeroconf, service_type, name, state_change):
         if state_change == ServiceStateChange.Added:
-            print("service discovered: ",name)
-            if name == "MessageServer1._http._tcp.local.":
+            print("service discovered: ", name)
+            if name == "MessageServer2._http._tcp.local.":
                 info = zeroconf.get_service_info(service_type, name)
                 if info:
                     self.server_ip = socket.inet_ntoa(info.addresses[0])
@@ -33,19 +33,36 @@ class ServerDiscovery:
         return self.server_ip, self.server_port
 
 
-discovery = ServerDiscovery()
-host, port = discovery.discover_server()
-print(f"Connecting to server at {host}:{port}...")
+class start_client():
+    def __init__(self):
+        self.discovery = ""
+        self.client_socket = ""
+        self.host, self.port = "",""
+        self.current_move = ""
+        self.opposition_move = ""
+        self.side = ""
+        self.connected = False
 
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((host, port))
-print(f"connected to server at{host}:{port} ")
-while True:
-    message = client_socket.recv(1024).decode("utf-8")
-    if message == "EXIT":
-        print("disconnected")
-        break
-    print("server said", message)
-    response = input("Enter your response").encode("utf-8")
-    client_socket.send(response)
-client_socket.close()
+    def connect_to_server(self):
+        self.discovery = ServerDiscovery()
+        self.host, self.port = self.discovery.discover_server()
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_socket.connect((self.host, self.port))
+        self.connected = True
+        self.side = self.client_socket.recv(1024).decode("utf-8")
+        if self.side == "blue":
+            self.opposition_move = self.client_socket.recv(1024).decode("utf-8")
+            if self.opposition_move[-3] != "-1]":
+                if self.current_move:
+                    self.client_socket.send(str(self.current_move).encode("utf-8"))
+                    if self.current_move[-1] != -1:
+                        self.opposition_move = self.client_socket.recv(1024).decode("utf-8")
+                    self.current_move = ""
+        elif self.side == "red":
+            while True:
+                if self.current_move:
+                    self.client_socket.send(str(self.current_move).encode("utf-8"))
+                    if self.current_move[-1] != -1:
+                        self.opposition_move = self.client_socket.recv(1024).decode("utf-8")
+                    self.current_move = ""
+        self.client_socket.close()

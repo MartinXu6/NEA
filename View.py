@@ -1,3 +1,4 @@
+import sys
 import time
 from tkinter import *
 import tkinter.scrolledtext as st
@@ -10,11 +11,13 @@ class start_menu:
     def __init__(self):
         self.menu = Tk()
         self.menu.geometry("1000x600")
-        self.single = Button(self.menu, text="Single Player", bg="red", height="10", width="20", command=self.single)
-        self.multi = Button(self.menu, text="Multi Player", bg="blue", height="10", width="20", command=self.multi)
-        self.quit = Button(self.menu, text="QUIT", bg="grey", height="10", width="20", command=quit)
-        self.single.pack()
+        self.single_p = Button(self.menu, text="Single Player", bg="red", height="7", width="20", command=self.single)
+        self.multi = Button(self.menu, text="Multi Player", bg="blue", height="7", width="20", command=self.multi)
+        self.online = Button(self.menu, text="Play Online", bg="yellow", height="7", width="20", command=self.online)
+        self.quit = Button(self.menu, text="QUIT", bg="grey", height="7", width="20", command=quit)
+        self.single_p.pack()
         self.multi.pack()
+        self.online.pack()
         self.quit.pack()
         self.running = False
         self.menu.mainloop()
@@ -27,11 +30,15 @@ class start_menu:
         self.menu.destroy()
         self.running = "multi"
 
+    def online(self):
+        self.menu.destroy()
+        self.running = "online"
+
 
 class Choosing:
     def __init__(self):
         self.choosing = Tk()
-        self.choosing.geometry("200x200")
+        self.choosing.geometry("300x300")
         self.choice = Label(self.choosing, text="Choose your side")
         self.red = Button(self.choosing, text="Red", bg="red", height="5", width="10", command=self.red)
         self.blue = Button(self.choosing, text="Blue", bg="blue", height="5", width="10", command=self.blue)
@@ -50,21 +57,48 @@ class Choosing:
         self.Side = "blue"
 
 
+class online_choosing:
+    def __init__(self):
+        self.o_choosing = Tk()
+        self.o_choosing.geometry("300x300")
+        self.host_red_game = Button(self.o_choosing, text="Host Game Red", bg="grey", height="5", width="15", command=self.Host_Game_Red)
+        self.host_blue_game = Button(self.o_choosing, text="Host Game Blue", bg="brown", height="5", width="15", command=self.Host_Game_Blue)
+        self.join_game = Button(self.o_choosing, text="Join Game", bg="purple", height="5", width="15", command=self.Join_Game)
+        self.status = ""
+        self.host_red_game.pack()
+        self.host_blue_game.pack()
+        self.join_game.pack()
+        self.o_choosing.mainloop()
+
+    def Host_Game_Red(self):
+        self.status = "host_r"
+        self.o_choosing.destroy()
+    def Host_Game_Blue(self):
+        self.status = "host_b"
+        self.o_choosing.destroy()
+
+
+    def Join_Game(self):
+        self.status = "join"
+        self.o_choosing.destroy()
+
+
 class GUI:
     def __init__(self):
+        self.stored_moves = ""
         self.root = Tk()
         self.main_board = Frame(self.root, bg="black", bd=0, width=440, height=440)
-        self.evaluation = Label(self.root, width=55, height=3,text="Current Evaluation", bg="grey" )
-        self.evaluation_red_text = Label(self.root, width=10, height=1,text="Red: 0.5" )
-        self.evaluation_blue_text = Label(self.root, width=10, height = 1, text = "Blue: 0.5")
-        self.evaluation_bar = Frame(self.root,width=395, height = 50)
-        self.evaluation_red = Frame(self.evaluation_bar,width=395/2, height=50, bg="red")
-        self.evaluation_blue = Frame(self.evaluation_bar,width= 395/2, height = 50, bg="blue")
+        self.evaluation = Label(self.root, width=55, height=3, text="Current Evaluation", bg="grey")
+        self.evaluation_red_text = Label(self.root, width=10, height=1, text="Red: 0.5")
+        self.evaluation_blue_text = Label(self.root, width=10, height=1, text="Blue: 0.5")
+        self.evaluation_bar = Frame(self.root, width=395, height=50)
+        self.evaluation_red = Frame(self.evaluation_bar, width=395 / 2, height=50, bg="red")
+        self.evaluation_blue = Frame(self.evaluation_bar, width=395 / 2, height=50, bg="blue")
         self.horizontal_cords = Frame(self.root, width=457, height=20)
         self.vertical_cords = Frame(self.root, width=20, height=457)
-        self.mover_display = Label(self.root, width=10, height= 30,bg= "white")
+        self.mover_display = Label(self.root, width=10, height=30, bg="white")
         self.quit_button = Button(self.root, bg="yellow", text="QUIT", width=20, height=10, command=self.quit)
-        self.moves = st.ScrolledText(self.root,width= 50,height = 20,)
+        self.moves = st.ScrolledText(self.root, width=50, height=20, )
         self.red_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
         self.blue_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
         self.displayed_pieces = []
@@ -97,7 +131,6 @@ class GUI:
 
     def quit(self):
         self.root.destroy()
-
 
     def board_on_click(self, i, j, event):
         if self.clicked_piece[0] != -1 and self.clicked_piece[1] != -1:
@@ -254,24 +287,24 @@ class GUI:
         self.bopt = ImageTk.PhotoImage(self.bopt)
 
         self.main_board.place(relx=0.5, y=340, anchor="center")
-        self.evaluation_bar.place(relx = 0.69, y = 290)
-        self.evaluation_red_text.place(relx = 0.69, y= 265)
-        self.evaluation_blue_text.place(relx = 0.93, y = 265)
+        self.evaluation_bar.place(relx=0.69, y=290)
+        self.evaluation_red_text.place(relx=0.69, y=265)
+        self.evaluation_blue_text.place(relx=0.93, y=265)
         self.evaluation_red.place(relx=0)
-        self.evaluation_blue.place(relx=1, anchor = "ne")
-        self.evaluation.place(relx=0.69, y= 210)
-        self.horizontal_cords.place(relx= 0.5, y = 580, anchor = "center")
-        self.vertical_cords.place(y=340, relx = 0.31, anchor = "center")
+        self.evaluation_blue.place(relx=1, anchor="ne")
+        self.evaluation.place(relx=0.69, y=210)
+        self.horizontal_cords.place(relx=0.5, y=580, anchor="center")
+        self.vertical_cords.place(y=340, relx=0.31, anchor="center")
         self.quit_button.place(relx=0.1, rely=0.5)
-        self.mover_display.place(relx = 0.24, y = 115, anchor = "nw")
-        self.moves.place(relx = 0.69, rely = 0.5)
-        self.moves.configure(state= "disabled")
+        self.mover_display.place(relx=0.24, y=115, anchor="nw")
+        self.moves.place(relx=0.69, rely=0.5)
+        self.moves.configure(state="disabled")
         for i in range(8):
-            square = Label(self.horizontal_cords, height=1, width=7,text=str(i))
-            square.place(relx= i*0.126,anchor = "nw")
+            square = Label(self.horizontal_cords, height=1, width=7, text=str(i))
+            square.place(relx=i * 0.126, anchor="nw")
         for i in range(8):
-            square = Label(self.vertical_cords, height=3, width=2,text=str(i))
-            square.place(rely = i*0.126, anchor = "nw")
+            square = Label(self.vertical_cords, height=3, width=2, text=str(i))
+            square.place(rely=i * 0.126, anchor="nw")
         for i in range(8):
             for j in range(8):
                 if 6 <= i <= 7:
@@ -469,7 +502,7 @@ class GUI:
             new_label.place(relx=0.14 * place[1], rely=0.130 * place[0], )
             self.displayed_pieces.append(new_label)
 
-    def got_captured(self, side, index,reverse_captured):
+    def got_captured(self, side, index, reverse_captured):
         if side == "red":
             if 0 <= index <= 7:
                 new_image = self.btpt
@@ -554,13 +587,25 @@ class GUI:
         else:
             new_piece.place(relx=0.126 * spot, y=0)
 
+    def save(self):
+        print(self.stored_moves)
+        self.new.destroy()
+        quit()
+
     def game_won(self, side):
         if side == "red":
             Game_over = Label(self.root, text=f"GAME OVER RED WON!", height=10, width=20, font=50, bg="red")
         else:
             Game_over = Label(self.root, text=f"GAME OVER BLUE WON!", height=10, width=20, font=50, bg="blue")
-        print(self.moves.get('1.0', END))
-        Game_over.place(relx=0.1, rely=0.2, anchor=CENTER)
+        self.stored_moves = self.moves.get('1.0', END)
+        Game_over.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.root.update()
-        time.sleep(5)
-        quit()
+        time.sleep(2)
+        self.root.destroy()
+        self.new = Tk()
+        self.new.geometry("500x500")
+        save = Button(self.new, text="Save Game", width=10, height=5, bg="grey", command=self.save)
+        save.place(relx=0.5, rely=0.3, anchor="center")
+        while True:
+            self.new.update()
+        # quit()

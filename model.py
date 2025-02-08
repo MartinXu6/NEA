@@ -71,6 +71,7 @@ class game:
         self.deployed = False
         self.winner = None
         self.current_move = []
+        self.current_index = []
 
     def is_move_legal(self, piece, end):
         if self.deployed:
@@ -93,6 +94,7 @@ class game:
                         self.deployed_reds += 1
                         self.board[end[0]][end[1]] = piece
                         self.current_move = [piece.side, piece.type, piece.location,end]
+                        self.current_index = [piece.index]
                         piece.location = end
                         moved = True
 
@@ -102,6 +104,7 @@ class game:
                         self.deployed_blues += 1
                         self.board[end[0]][end[1]] = piece
                         self.current_move = [piece.side, piece.type, piece.location, end]
+                        self.current_index = [piece.index]
                         piece.location = end
                         moved = True
         return moved
@@ -114,6 +117,7 @@ class game:
                     if self.board[end[0]][end[1]] == 0:
                         self.board[end[0]][end[1]] = piece
                         self.current_move = [piece.side, piece.type, piece.location, end]
+                        self.current_index = [piece.index]
                         piece.location = end
                         return True
                     else:
@@ -132,6 +136,7 @@ class game:
                         self.board[start[0]][start[1]] = 0
                         self.board[end[0]][end[1]] = piece
                         self.current_move = [piece.side, piece.type, piece.location, end]
+                        self.current_index = [piece.index]
                         piece.location = end
                         return True
                     else:
