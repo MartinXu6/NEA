@@ -10,19 +10,16 @@ class ServerDiscovery:
 
     def on_service_state_change(self, zeroconf, service_type, name, state_change):
         if state_change == ServiceStateChange.Added:
-            print("service discovered: ", name)
-            if name == "MessageServer2._http._tcp.local.":
+            if name == "MessageServer3._http._tcp.local.":
                 info = zeroconf.get_service_info(service_type, name)
                 if info:
                     self.server_ip = socket.inet_ntoa(info.addresses[0])
                     self.server_port = info.port
-                    print(f"Discovered server: {self.server_ip}:{self.server_port}")
 
     def discover_server(self):
         zeroconf = Zeroconf()
         browser = ServiceBrowser(zeroconf, "_http._tcp.local.", handlers=[self.on_service_state_change])
 
-        print("Searching for the server...")
         try:
             # Wait until the server is discovered
             while not self.server_ip:
@@ -49,7 +46,9 @@ class start_client():
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_socket.connect((self.host, self.port))
         self.connected = True
+        print("connected")
         self.side = self.client_socket.recv(1024).decode("utf-8")
+        print(self.side)
         if self.side == "blue":
             self.opposition_move = self.client_socket.recv(1024).decode("utf-8")
             if self.opposition_move[-3] != "-1]":

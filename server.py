@@ -19,7 +19,7 @@ class server:
         zeroconf = Zeroconf()
         service_info = ServiceInfo(
             "_http._tcp.local.",
-            "MessageServer2._http._tcp.local.",
+            "MessageServer3._http._tcp.local.",
             addresses=[socket.inet_aton(self.local_IP)],
             port=5000,
             properties={},
@@ -29,7 +29,6 @@ class server:
         zeroconf.register_service(service_info)
 
         client_socket, client_address = self.server_socket.accept()
-        print("connected")
         self.connected = True
         client_socket.send("blue".encode("utf-8")) if self.side == "red" else client_socket.send("red".encode("utf-8"))
 
