@@ -280,8 +280,9 @@ def multi_players(colour):
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue", bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -459,8 +460,9 @@ def multi_players(colour):
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -714,8 +716,9 @@ def single_player_red():
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -769,8 +772,9 @@ def single_player_red():
 
                 Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -913,8 +917,9 @@ def single_player_blue():
 
                 Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -1078,8 +1083,9 @@ def single_player_blue():
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -1327,8 +1333,9 @@ def online_red():
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -1382,8 +1389,9 @@ def online_red():
 
                 Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -1526,8 +1534,9 @@ def online_blue():
 
                 Game.move(Game.board[current_move[0][0]][current_move[0][1]], current_move[1], "blue")
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -1691,8 +1700,9 @@ def online_blue():
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
-                eval_red = Minimax.evaluation(Game.board, "red")
-                eval_blue = Minimax.evaluation(Game.board, "blue")
+                bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
+                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1

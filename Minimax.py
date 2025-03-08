@@ -3,16 +3,16 @@ from random import randint
 from copy import deepcopy
 
 
-def evaluation(current_position,max_player):
+def evaluation(current_position,max_player,bench):
     board_heat_map = [[1, 2, 2, 2, 2, 2, 2, 1],
-                      [2, 3, 3, 3, 3, 3, 3, 2],
-                      [2, 3, 4, 4, 4, 4, 3, 2],
-                      [2, 3, 4, 5, 5, 4, 3, 2],
-                      [2, 3, 4, 5, 5, 4, 3, 2],
-                      [2, 3, 4, 4, 4, 4, 3, 2],
-                      [2, 3, 3, 3, 3, 3, 3, 2],
+                      [2, 2, 2, 2, 2, 2, 2, 2],
+                      [2, 2, 3, 3, 3, 3, 2, 2],
+                      [2, 2, 3, 3.5, 3.5, 3, 2, 2],
+                      [2, 2, 3, 3.5, 3.5, 3, 2, 2],
+                      [2, 2, 3, 3, 3, 3, 2, 2],
+                      [2, 2, 2, 2, 2, 2, 2, 2],
                       [1, 2, 2, 2, 2, 2, 2, 1], ]
-    piece_value = {(2, 2): 5, (0, 2): 4, (1, 1): 3, (1, 2): 7, (0, 1): 1}
+    piece_value = {(2, 2): 3, (0, 2): 3, (1, 1): 6, (1, 2): 10, (0, 1): 1}
     total_value = 0
     red_won = True
     blue_won = False
@@ -38,6 +38,8 @@ def evaluation(current_position,max_player):
                                 move[1]].side == max_player:
                                 total_value -= 20
                     total_value -= piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
+    total_value += sum([piece_value.get(i.type)*10 for i in bench if i.side == max_player])
+    total_value -= sum([piece_value.get(i.type)*10 for i in bench if i.side != max_player])
     if red_won:
         total_value -= 999
     if blue_won:
@@ -76,9 +78,9 @@ def deploy_minimax(current_position, deployable, deployed_index, depth, current_
 def move_minimax(current_position, current_pieces, opposition_pieces, depth, current_player, previous_move):
     new_current_pieces = deepcopy(current_pieces)
     new_opposition_pieces = deepcopy(opposition_pieces)
-    # bench = [piece for piece in new_current_pieces + new_opposition_pieces if piece.location == (-1, -1)]
+    bench = [piece for piece in new_current_pieces + new_opposition_pieces if piece.location == (-1, -1)]
     if depth == 0:
-        return [evaluation(current_position, "blue"), previous_move]
+        return [evaluation(current_position, "blue",bench), previous_move]
     all_moves = get_all_moves(current_position, current_player)
     current_deployable = [piece for piece in new_current_pieces + new_opposition_pieces if
                           piece.location == (-1, -1) and piece.side == current_player]

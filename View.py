@@ -99,8 +99,8 @@ class GUI:
         self.mover_display = Label(self.root, width=10, height=30, bg="white")
         self.quit_button = Button(self.root, bg="yellow", text="QUIT", width=20, height=10, command=self.quit)
         self.moves = st.ScrolledText(self.root, width=50, height=20, )
-        self.red_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
-        self.blue_pieces = Frame(self.root, bg="yellow", width=470, height=110, )
+        self.red_pieces = Frame(self.root, bg="white", width=470, height=110, )
+        self.blue_pieces = Frame(self.root, bg="white", width=470, height=110, )
         self.displayed_pieces = []
         self.red = []
         self.blue = []
@@ -308,9 +308,9 @@ class GUI:
         for i in range(8):
             for j in range(8):
                 if 6 <= i <= 7:
-                    square = Frame(self.main_board, height=55, width=55, bg="red")
+                    square = Frame(self.main_board, height=55, width=55, bg="white")
                 elif 0 <= i <= 1:
-                    square = Frame(self.main_board, height=55, width=55, bg="blue")
+                    square = Frame(self.main_board, height=55, width=55, bg="white")
                 else:
                     square = Frame(self.main_board, height=55, width=55, bg="white")
                 square.bind("<Button-1>", lambda e, i=i, j=j: self.board_on_click(i, j, e))
