@@ -12,7 +12,7 @@ def evaluation(current_position,max_player,bench):
                       [2, 2, 3, 3, 3, 3, 2, 2],
                       [2, 2, 2, 2, 2, 2, 2, 2],
                       [1, 2, 2, 2, 2, 2, 2, 1], ]
-    piece_value = {(2, 2): 3, (0, 2): 3, (1, 1): 6, (1, 2): 10, (0, 1): 1}
+    piece_value = {(2, 2): 3, (0, 2): 3, (1, 1): 4, (1, 2): 6, (0, 1): 1}
     total_value = 0
     red_won = True
     blue_won = False
@@ -38,8 +38,8 @@ def evaluation(current_position,max_player,bench):
                                 move[1]].side == max_player:
                                 total_value -= 20
                     total_value -= piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
-    total_value += sum([piece_value.get(i.type)*10 for i in bench if i.side == max_player])
-    total_value -= sum([piece_value.get(i.type)*10 for i in bench if i.side != max_player])
+    total_value += sum([piece_value.get(i.type)*4 for i in bench if i.side == max_player])
+    total_value -= sum([piece_value.get(i.type)*4 for i in bench if i.side != max_player])
     if red_won:
         total_value -= 999
     if blue_won:

@@ -3,31 +3,68 @@ import copy
 
 
 class Piece:
-    def __init__(self, side, Type, location,index):
-        self.origin = side
-        self.side = side
-        self.type = Type
-        self.location = location
-        self.index = index
+    def __init__(self, side, Type, location, index):
+        """
+        Initialize a game piece with its properties
+
+        Parameters:
+        - side (str): Current team/owner of the piece (e.g., "red"/"blue")
+        - Type (tuple): Movement pattern vector (e.g., (1,2) for knight-like moves)
+        - location (tuple): Current (row, col) position on board. (-1,-1) = off-board
+        - index (int): Unique identifier for tracking the piece in collections
+        """
+        self.origin = side  # Original team (never changes)
+        self.side = side  # Current team (can change if captured)
+        self.type = Type  # Movement capability definition
+        self.location = location  # (row, column) position
+        self.index = index  # Identification number
 
     def movable(self, board):
+        """
+        Calculate all valid moves for this piece based on:
+        - Movement pattern
+        - Board boundaries
+        - Existing pieces
+
+        Parameters:
+        - board (2D list): Current game board state
+
+        Returns:
+        - list: Valid (row, col) positions the piece can move to
+        """
+        # If piece is off-board (in reserve), no possible moves
         start = self.location
-        if start == (-1,-1):
+        if start == (-1, -1):
             return []
-        all_moves = []
-        movables = []
-        for i in self.type, self.type[::-1]:
-            all_moves.append((start[0] + i[0], start[1] + i[1]))
-            all_moves.append((start[0] - i[0], start[1] - i[1]))
-            all_moves.append((start[0] + i[0], start[1] - i[1]))
-            all_moves.append((start[0] - i[0], start[1] + i[1]))
+
+        all_moves = []  # Raw potential moves before validation
+        movables = []  # Validated legal moves
+
+        # Generate movement vectors in all directions using:
+        # Original type vector + reversed vector (e.g., (1,2) and (2,1))
+        for vector in [self.type, self.type[::-1]]:
+            # Create 4 directional combinations for each vector
+            all_moves.extend([
+                (start[0] + vector[0], start[1] + vector[1]),  # Forward
+                (start[0] - vector[0], start[1] - vector[1]),  # Backward
+                (start[0] + vector[0], start[1] - vector[1]),  # Right-diagonal
+                (start[0] - vector[0], start[1] + vector[1])  # Left-diagonal
+            ])
+
+        # Validate potential moves
         for move in all_moves:
+            # Check if move stays within board boundaries
             if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
-                if board[move[0]][move[1]] != 0:
-                    if board[move[0]][move[1]].side != self.side:
-                        movables.append(move)
-                else:
+                target = board[move[0]][move[1]]
+
+                if target == 0:  # Empty square
                     movables.append(move)
+                else:  # Occupied square
+                    # Only allow capture of enemy pieces
+                    if target.side != self.side:
+                        movables.append(move)
+                        # Note: Does NOT allow moving through pieces, only capturing
+
         return movables
 
 
