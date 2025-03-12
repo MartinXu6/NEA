@@ -496,10 +496,10 @@ class GUI:
 
     def display_movable(self, movable):
         for place in movable:
-            new_label = Label(self.main_board, bg="black", height=3, width=6)
+            new_label = Label(self.main_board, bg="black", height=1, width=2)
             new_label.bind("<Button-1>", lambda e, i=place[0], j=place[1]: self.board_on_click(i, j, e))
             print(place[0],place[1])
-            new_label.place(x=5+57*place[1], y=403-57*(7-place[0]) )
+            new_label.place(x=19+57*place[1], y=415-57*(7-place[0]) )
             self.displayed_pieces.append(new_label)
 
     def got_captured(self, side, index, reverse_captured):
