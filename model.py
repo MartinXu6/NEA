@@ -3,73 +3,71 @@ import copy
 
 
 class Piece:
+    # Constructor to initialize a game piece with its properties.
+    # Parameters:
+    #   side: str - The team/owner of the piece (e.g., "red" or "blue").
+    #   Type: tuple - Movement pattern vector (e.g., (1, 2) for knight-like moves).
+    #   location: tuple - Current board position as (row, col); (-1, -1) indicates off-board or reserve.
+    #   index: int - Unique identifier for tracking the piece.
     def __init__(self, side, Type, location, index):
-        """
-        Initialize a game piece with its properties
+        self.origin = side  # Original team assignment (immutable once set).
+        self.side = side  # Current team assignment (may change if the piece is captured).
+        self.type = Type  # Movement pattern vector defining the piece's movement capabilities.
+        self.location = location  # Current board position (row, col).
+        self.index = index  # Unique identifier for the piece.
 
-        Parameters:
-        - side (str): Current team/owner of the piece (e.g., "red"/"blue")
-        - Type (tuple): Movement pattern vector (e.g., (1,2) for knight-like moves)
-        - location (tuple): Current (row, col) position on board. (-1,-1) = off-board
-        - index (int): Unique identifier for tracking the piece in collections
-        """
-        self.origin = side  # Original team (never changes)
-        self.side = side  # Current team (can change if captured)
-        self.type = Type  # Movement capability definition
-        self.location = location  # (row, column) position
-        self.index = index  # Identification number
-
+    # Compute and return all valid moves for this piece based on its movement pattern,
+    # board boundaries, and the positions of other pieces.
+    # Parameters:
+    #   board: list of lists - The current state of the game board where each element is either 0 (empty) or a Piece.
+    # Returns:
+    #   list - Valid (row, col) positions where the piece can legally move.
     def movable(self, board):
-        """
-        Calculate all valid moves for this piece based on:
-        - Movement pattern
-        - Board boundaries
-        - Existing pieces
+        start = self.location  # Store the current position of the piece.
 
-        Parameters:
-        - board (2D list): Current game board state
-
-        Returns:
-        - list: Valid (row, col) positions the piece can move to
-        """
-        # If piece is off-board (in reserve), no possible moves
-        start = self.location
+        # If the piece is off the board (e.g., in reserve), it cannot move.
         if start == (-1, -1):
             return []
 
-        all_moves = []  # Raw potential moves before validation
-        movables = []  # Validated legal moves
+        all_moves = []  # List to accumulate raw potential moves based on movement vectors.
+        movables = []  # List to store moves validated against board limits and occupancy.
 
-        # Generate movement vectors in all directions using:
-        # Original type vector + reversed vector (e.g., (1,2) and (2,1))
+        # Generate potential moves using the original movement vector and its reversed form.
+        # This allows for moves in different orders of magnitude in the two dimensions.
         for vector in [self.type, self.type[::-1]]:
-            # Create 4 directional combinations for each vector
+            # Calculate four directional moves for each vector:
+            # 1. Both components added.
+            # 2. Both components subtracted.
+            # 3. First added, second subtracted.
+            # 4. First subtracted, second added.
             all_moves.extend([
-                (start[0] + vector[0], start[1] + vector[1]),  # Forward
-                (start[0] - vector[0], start[1] - vector[1]),  # Backward
-                (start[0] + vector[0], start[1] - vector[1]),  # Right-diagonal
-                (start[0] - vector[0], start[1] + vector[1])  # Left-diagonal
+                (start[0] + vector[0], start[1] + vector[1]),
+                (start[0] - vector[0], start[1] - vector[1]),
+                (start[0] + vector[0], start[1] - vector[1]),
+                (start[0] - vector[0], start[1] + vector[1])
             ])
 
-        # Validate potential moves
+        # Validate each potential move.
         for move in all_moves:
-            # Check if move stays within board boundaries
+            # Ensure the move is within an 8x8 board.
             if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
-                target = board[move[0]][move[1]]
+                target = board[move[0]][move[1]]  # Get the board cell content at the target position.
 
-                if target == 0:  # Empty square
+                if target == 0:
+                    # The square is empty; the move is valid.
                     movables.append(move)
-                else:  # Occupied square
-                    # Only allow capture of enemy pieces
+                else:
+                    # The square is occupied; check if it is an enemy piece.
                     if target.side != self.side:
                         movables.append(move)
-                        # Note: Does NOT allow moving through pieces, only capturing
-
+                        # Note: The piece can capture an enemy but cannot jump over any piece.
         return movables
 
 
 class game:
+    # Initialize game state and components.
     def __init__(self):
+        # 8x8 board with all cells empty (0).
         self.board = [[0, 0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
@@ -78,37 +76,33 @@ class game:
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0, 0], ]
-        # self.board = [[Piece("blue", (2, 2), (0, 0)), Piece("blue", (2, 2), (0, 1)), Piece("blue", (2, 2), (0, 2)),
-        # Piece("blue", (2, 2), (0, 3)), Piece("blue", (2, 2), (0, 4)), Piece("blue", (2, 2), (0, 5)), Piece("blue",
-        # (2, 2), (0, 6)), Piece("blue", (2, 2), (0, 7))], [Piece("blue", (0, 2), (1, 0)), Piece("blue", (0, 2), (1,
-        # 1)), Piece("blue", (0, 2), (1, 2)), Piece("blue", (0, 2), (1, 3)), Piece("blue", (1, 1), (1, 4)),
-        # Piece("blue", (1, 1), (1, 5)), Piece("blue", (0, 1), (1, 6)), Piece("blue", (1, 2), (0, 7))], [0, 0, 0, 0,
-        # 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [Piece("red",
-        # (0, 2), (6, 0)), Piece("red", (0, 2), (6, 1)), Piece("red", (0, 2), (6, 2)), Piece("red", (0, 2), (6, 3)),
-        # Piece("red", (1, 1), (6, 4)), Piece("red", (1, 1), (6, 5)), Piece("red", (0, 1), (6, 6)), Piece("red", (1,
-        # 2), (6, 7))], [Piece("red", (2, 2), (7, 0)), Piece("red", (2, 2), (7, 1)), Piece("red", (2, 2), (7, 2)),
-        # Piece("red", (2, 2), (7, 3)), Piece("red", (2, 2), (7, 4)), Piece("red", (2, 2), (7, 5)), Piece("red", (2,
-        # 2), (7, 6)), Piece("red", (2, 2), (7, 7))], ]
-        self.reds = [Piece("red", (2, 2), (-1, -1),0), Piece("red", (2, 2), (-1, -1),1), Piece("red", (2, 2), (-1, -1),2),
-                     Piece("red", (2, 2), (-1, -1),3), Piece("red", (2, 2), (-1, -1),4), Piece("red", (2, 2), (-1, -1),5),
-                     Piece("red", (2, 2), (-1, -1),6), Piece("red", (2, 2), (-1, -1),7), Piece("red", (0, 2), (-1, -1),8),
-                     Piece("red", (0, 2), (-1, -1),9), Piece("red", (0, 2), (-1, -1),10), Piece("red", (0, 2), (-1, -1),11),
-                     Piece("red", (1, 1), (-1, -1),12), Piece("red", (1, 1), (-1, -1),13), Piece("red", (1, 2), (-1, -1),14),
-                     Piece("red", (0, 1), (-1, -1),15)]
-        self.blues = [Piece("blue", (2, 2), (-1, -1),0), Piece("blue", (2, 2), (-1, -1),1), Piece("blue", (2, 2), (-1, -1),2),
-                      Piece("blue", (2, 2), (-1, -1),3), Piece("blue", (2, 2), (-1, -1),4), Piece("blue", (2, 2), (-1, -1),5),
-                      Piece("blue", (2, 2), (-1, -1),6), Piece("blue", (2, 2), (-1, -1),7), Piece("blue", (0, 2), (-1, -1),8),
-                      Piece("blue", (0, 2), (-1, -1),9), Piece("blue", (0, 2), (-1, -1),10), Piece("blue", (0, 2), (-1, -1),11),
-                      Piece("blue", (1, 1), (-1, -1),12), Piece("blue", (1, 1), (-1, -1),13), Piece("blue", (1, 2), (-1, -1),14),
-                      Piece("blue", (0, 1), (-1, -1),15)]
+        # List of red pieces with initial configuration.
+        self.reds = [Piece("red", (2, 2), (-1, -1), 0), Piece("red", (2, 2), (-1, -1), 1), Piece("red", (2, 2), (-1, -1), 2),
+                     Piece("red", (2, 2), (-1, -1), 3), Piece("red", (2, 2), (-1, -1), 4), Piece("red", (2, 2), (-1, -1), 5),
+                     Piece("red", (2, 2), (-1, -1), 6), Piece("red", (2, 2), (-1, -1), 7), Piece("red", (0, 2), (-1, -1), 8),
+                     Piece("red", (0, 2), (-1, -1), 9), Piece("red", (0, 2), (-1, -1), 10), Piece("red", (0, 2), (-1, -1), 11),
+                     Piece("red", (1, 1), (-1, -1), 12), Piece("red", (1, 1), (-1, -1), 13), Piece("red", (1, 2), (-1, -1), 14),
+                     Piece("red", (0, 1), (-1, -1), 15)]
+        # List of blue pieces with initial configuration.
+        self.blues = [Piece("blue", (2, 2), (-1, -1), 0), Piece("blue", (2, 2), (-1, -1), 1), Piece("blue", (2, 2), (-1, -1), 2),
+                      Piece("blue", (2, 2), (-1, -1), 3), Piece("blue", (2, 2), (-1, -1), 4), Piece("blue", (2, 2), (-1, -1), 5),
+                      Piece("blue", (2, 2), (-1, -1), 6), Piece("blue", (2, 2), (-1, -1), 7), Piece("blue", (0, 2), (-1, -1), 8),
+                      Piece("blue", (0, 2), (-1, -1), 9), Piece("blue", (0, 2), (-1, -1), 10), Piece("blue", (0, 2), (-1, -1), 11),
+                      Piece("blue", (1, 1), (-1, -1), 12), Piece("blue", (1, 1), (-1, -1), 13), Piece("blue", (1, 2), (-1, -1), 14),
+                      Piece("blue", (0, 1), (-1, -1), 15)]
+        # Count of deployed red pieces.
         self.deployed_reds = 0
+        # Count of deployed blue pieces.
         self.deployed_blues = 0
-        # self.reds = []
-        # self.blues = []
+        # Flag to indicate if pieces are deployed.
         self.deployed = False
+        # Winner of the game (None if no winner yet).
         self.winner = None
+        # List to store the current move positions.
         self.current_move = []
+        # List to store the indices of pieces involved in the current move.
         self.current_index = []
+
 
     def is_move_legal(self, piece, end):
         if self.deployed:

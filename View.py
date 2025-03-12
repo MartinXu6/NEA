@@ -4,7 +4,6 @@ from tkinter import *
 import tkinter.scrolledtext as st
 from PIL import Image
 from PIL import ImageTk
-import model
 
 
 class start_menu:
@@ -38,10 +37,10 @@ class start_menu:
 class Choosing:
     def __init__(self):
         self.choosing = Tk()
-        self.choosing.geometry("300x300")
+        self.choosing.geometry("1000x600")
         self.choice = Label(self.choosing, text="Choose your side")
-        self.red = Button(self.choosing, text="Red", bg="red", height="5", width="10", command=self.red)
-        self.blue = Button(self.choosing, text="Blue", bg="blue", height="5", width="10", command=self.blue)
+        self.red = Button(self.choosing, text="Red", bg="red", height="7", width="20", command=self.red)
+        self.blue = Button(self.choosing, text="Blue", bg="blue", height="7", width="20", command=self.blue)
         Side = ""
         self.choice.pack()
         self.red.pack()
@@ -404,7 +403,7 @@ class GUI:
             new_piece.bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=piece, s="red": self.captured_on_click(i, j, e, s, index))
             self.blue.insert(piece, new_piece)
-            self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+            self.blue[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
             self.blue_locations[piece] = end
             self.red_spots.append(self.blue_taken_spots[piece])
             self.blue_taken_spots[piece] = -1
@@ -416,7 +415,7 @@ class GUI:
             new_piece.bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=piece, s="blue": self.captured_on_click(i, j, e, s, index))
             self.red.insert(piece, new_piece)
-            self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+            self.red[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
             self.red_locations[piece] = end
             self.blue_spots.append(self.red_taken_spots[piece])
             self.red_taken_spots[piece] = -1
@@ -430,7 +429,7 @@ class GUI:
             new_piece.bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=piece, s="red": self.piece_on_click(i, j, e, s, index))
             self.red.insert(piece, new_piece)
-            self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+            self.red[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
             self.red_locations[piece] = end
             if self.red_taken_spots[piece] != -1:
                 self.red_spots.append(self.red_taken_spots[piece])
@@ -443,7 +442,7 @@ class GUI:
             new_piece.bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=piece, s="blue": self.piece_on_click(i, j, e, s, index))
             self.blue.insert(piece, new_piece)
-            self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+            self.blue[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
             self.blue_locations[piece] = end
             if self.blue_taken_spots[piece] != -1:
                 self.blue_spots.append(self.blue_taken_spots[piece])
@@ -461,7 +460,7 @@ class GUI:
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=piece, s="red": self.piece_on_click(i, j, e, s, index))
                 self.red.insert(piece, new_piece)
-                self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+                self.red[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
                 self.red_locations[piece] = end
             else:
                 previous_image = self.blue[piece].cget("image")
@@ -471,7 +470,7 @@ class GUI:
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=piece, s="red": self.captured_on_click(i, j, e, s, index))
                 self.blue.insert(piece, new_piece)
-                self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+                self.blue[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
                 self.blue_locations[piece] = end
         else:
             if CAPTURED == 0:
@@ -482,7 +481,7 @@ class GUI:
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=piece, s="blue": self.piece_on_click(i, j, e, s, index))
                 self.blue.insert(piece, new_piece)
-                self.blue[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+                self.blue[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
                 self.blue_locations[piece] = end
             else:
                 previous_image = self.red[piece].cget("image")
@@ -492,14 +491,15 @@ class GUI:
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=piece, s="blue": self.captured_on_click(i, j, e, s, index))
                 self.red.insert(piece, new_piece)
-                self.red[piece].place(relx=0.127 * end[1], rely=0.126 * end[0])
+                self.red[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
                 self.red_locations[piece] = end
 
     def display_movable(self, movable):
         for place in movable:
-            new_label = Label(self.main_board, bg="black", height=1, width=1)
+            new_label = Label(self.main_board, bg="black", height=3, width=6)
             new_label.bind("<Button-1>", lambda e, i=place[0], j=place[1]: self.board_on_click(i, j, e))
-            new_label.place(relx=0.14 * place[1], rely=0.130 * place[0], )
+            print(place[0],place[1])
+            new_label.place(x=5+57*place[1], y=403-57*(7-place[0]) )
             self.displayed_pieces.append(new_label)
 
     def got_captured(self, side, index, reverse_captured):
