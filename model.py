@@ -117,28 +117,33 @@ class game:
         pass
 
     def deploy(self, piece, end):
-        moved = False
+        moved = False  # Flag to track successful deployment
+
+        # Check if target cell is empty and deployment phase is active
         if self.board[end[0]][end[1]] == 0:
-            if not self.deployed:
+            if not self.deployed:  # Verify deployment phase hasn't ended
+
+                # Red team deployment rules (bottom rows 6-7)
                 if piece.side == "red":
                     if end[0] in [6, 7] and 0 <= end[1] <= 7:
-                        self.deployed_reds += 1
-                        self.board[end[0]][end[1]] = piece
-                        self.current_move = [piece.side, piece.type, piece.location,end]
-                        self.current_index = [piece.index]
-                        piece.location = end
+                        self.deployed_reds += 1  # Track red deployments
+                        self.board[end[0]][end[1]] = piece  # Place piece on board
+                        self.current_move = [piece.side, piece.type, piece.location, end]  # Record move
+                        self.current_index = [piece.index]  # Track moved piece index
+                        piece.location = end  # Update piece's position
                         moved = True
 
-
+                # Blue team deployment rules (top rows 0-1)
                 elif piece.side == "blue":
                     if end[0] in [0, 1] and 0 <= end[1] <= 7:
-                        self.deployed_blues += 1
+                        self.deployed_blues += 1  # Track blue deployments
                         self.board[end[0]][end[1]] = piece
                         self.current_move = [piece.side, piece.type, piece.location, end]
                         self.current_index = [piece.index]
                         piece.location = end
                         moved = True
-        return moved
+
+        return moved  # Return deployment success status
 
     def move(self, piece, end, side):
         if piece != 0:
