@@ -146,35 +146,45 @@ class game:
         return moved  # Return deployment success status
 
     def move(self, piece, end, side):
+        # Move a piece to the target position if legal.
         if piece != 0:
+            # Ensure the piece belongs to the correct side.
             if piece.side == side:
-                if piece.location == (-1,-1):
-                    start = piece.location
+                # If the piece is off-board (reserve deployment).
+                if piece.location == (-1, -1):
+                    start = piece.location  # Current location (off-board)
+                    # Deploy only if target cell is empty.
                     if self.board[end[0]][end[1]] == 0:
+                        self.board[end[0]][end[1]] = piece  # Place piece on board.
+                        self.current_move = [piece.side, piece.type, piece.location, end]  # Record move.
+                        self.current_index = [piece.index]  # Record piece index.
+                        piece.location = end  # Update piece location.
+                        return True
+                    else:
+                        return False
+                else:
+                    # For pieces already on board, check if move is legal.
+                    if self.is_move_legal(piece, end):
+                        start = piece.location  # Current location.
+                        # If target cell is occupied, handle capture.
+                        if self.board[end[0]][end[1]] != 0:
+                            captured_piece = self.board[end[0]][end[1]]
+                            # If the captured piece is of a special type, win the game.
+                            if captured_piece.type == (0, 1):
+                                self.game_won(piece.side)
+                                self.winner = piece.side
+                            # Capture: change captured piece's side and move it off-board.
+                            self.board[end[0]][end[1]].side = piece.side
+                            self.board[end[0]][end[1]].location = (-1, -1)
+                        # Clear original cell and move piece.
+                        self.board[start[0]][start[1]] = 0
                         self.board[end[0]][end[1]] = piece
+                        # Record move details.
                         self.current_move = [piece.side, piece.type, piece.location, end]
                         self.current_index = [piece.index]
-                        piece.location = end
+                        piece.location = end  # Update piece location.
                         return True
                     else:
                         return False
 
-                else:
-                    if self.is_move_legal(piece, end):
-                        start = piece.location
-                        if self.board[end[0]][end[1]] != 0:
-                            captured_piece = self.board[end[0]][end[1]]
-                            if captured_piece.type == (0, 1):
-                                self.game_won(piece.side)
-                                self.winner = piece.side
-                            self.board[end[0]][end[1]].side = piece.side
-                            self.board[end[0]][end[1]].location = (-1, -1)
-                        self.board[start[0]][start[1]] = 0
-                        self.board[end[0]][end[1]] = piece
-                        self.current_move = [piece.side, piece.type, piece.location, end]
-                        self.current_index = [piece.index]
-                        piece.location = end
-                        return True
-                    else:
-                        return False
 
