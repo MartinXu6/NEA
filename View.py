@@ -6,32 +6,45 @@ from PIL import Image
 from PIL import ImageTk
 
 
+# Class to create and manage the start menu GUI
 class start_menu:
+    # Initialize the start menu window and GUI components
     def __init__(self):
+        # Main Tkinter window for the menu
         self.menu = Tk()
+        # Set window dimensions
         self.menu.geometry("1000x600")
+
+        # Buttons for game modes and quit option:
+        # Single Player button (red) - triggers single() method
         self.single_p = Button(self.menu, text="Single Player", bg="red", height="7", width="20", command=self.single)
+        # Multi Player button (blue) - triggers multi() method
         self.multi = Button(self.menu, text="Multi Player", bg="blue", height="7", width="20", command=self.multi)
+        # Online Play button (yellow) - triggers online() method
         self.online = Button(self.menu, text="Play Online", bg="yellow", height="7", width="20", command=self.online)
+        # Quit button (grey) - exits application
         self.quit = Button(self.menu, text="QUIT", bg="grey", height="7", width="20", command=quit)
+
+        # Add buttons to window
         self.single_p.pack()
         self.multi.pack()
         self.online.pack()
         self.quit.pack()
+
+        # Tracks active game mode (False = no mode selected)
         self.running = False
+        # Start GUI event loop
         self.menu.mainloop()
 
+    # Handle single player mode selection
     def single(self):
-        self.menu.destroy()
-        self.running = "single"
+        self.menu.destroy()  # Close menu window
+        self.running = "single"  # Set mode to single player
 
+    # Handle local multiplayer mode selection
     def multi(self):
-        self.menu.destroy()
-        self.running = "multi"
-
-    def online(self):
-        self.menu.destroy()
-        self.running = "online"
+        self.menu.destroy()  # Close menu window
+        self.running = "multi"  # Set mode to local multiplayer
 
 
 class Choosing:
