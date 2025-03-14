@@ -290,11 +290,13 @@ class GUI:
                         self.displayed_pieces = []
 
     def initialise_GUI(self):
-
+        # Window configuration and title
         self.root.title("ZERO POINT ONE")
         self.root.geometry("1500x800")
         self.root.resizable(False, False)
         self.root.state("zoomed")
+
+        # Convert image references for Tkinter compatibility
         self.rtpt = ImageTk.PhotoImage(self.rtpt)
         self.rzpo = ImageTk.PhotoImage(self.rzpo)
         self.rzpt = ImageTk.PhotoImage(self.rzpt)
@@ -306,6 +308,7 @@ class GUI:
         self.bopo = ImageTk.PhotoImage(self.bopo)
         self.bopt = ImageTk.PhotoImage(self.bopt)
 
+        # Position main UI components
         self.main_board.place(relx=0.5, y=340, anchor="center")
         self.evaluation_bar.place(relx=0.69, y=290)
         self.evaluation_red_text.place(relx=0.69, y=265)
@@ -319,12 +322,16 @@ class GUI:
         self.mover_display.place(relx=0.24, y=115, anchor="nw")
         self.moves.place(relx=0.69, rely=0.5)
         self.moves.configure(state="disabled")
+
+        # Create coordinate labels for board edges
         for i in range(8):
             square = Label(self.horizontal_cords, height=1, width=7, text=str(i))
             square.place(relx=i * 0.126, anchor="nw")
         for i in range(8):
             square = Label(self.vertical_cords, height=3, width=2, text=str(i))
             square.place(rely=i * 0.126, anchor="nw")
+
+        # Generate 8x8 game board grid with click handlers
         for i in range(8):
             for j in range(8):
                 if 6 <= i <= 7:
@@ -335,8 +342,12 @@ class GUI:
                     square = Frame(self.main_board, height=55, width=55, bg="white")
                 square.bind("<Button-1>", lambda e, i=i, j=j: self.board_on_click(i, j, e))
                 square.grid(row=i, column=j, padx=1, pady=1)
+
+        # Position piece containers below/above main board
         self.red_pieces.place(relx=0.5, y=650, anchor="center")
         self.blue_pieces.place(relx=0.5, y=50, anchor="center")
+
+        # Initialize red piece tracking list
         rtptl1, rtptl2, rtptl3, rtptl4, rtptl5, rtptl6, rtptl7, rtptl8, rzptl1, rzptl2, rzptl3, rzptl4, ropol1, ropol2, roptl, rzpol = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.red = [rtptl1, rtptl2, rtptl3, rtptl4, rtptl5, rtptl6, rtptl7, rtptl8, rzptl1, rzptl2, rzptl3, rzptl4,
@@ -344,6 +355,7 @@ class GUI:
                     ropol2,
                     roptl, rzpol]
 
+        # Create first row of red pieces
         counter = 0
         for i in range(8):
             self.red[i] = Label(self.red_pieces, image=self.rtpt, bg=self.piece_colour)
@@ -351,6 +363,8 @@ class GUI:
                              lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
             self.red[i].place(relx=0.126 * counter)
             counter += 1
+
+        # Second row of red pieces
         counter = 0
         for i in range(8, 12):
             self.red[i] = Label(self.red_pieces, image=self.rzpt, bg=self.piece_colour)
@@ -358,6 +372,8 @@ class GUI:
                              lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
             self.red[i].place(relx=0.126 * counter, y=55)
             counter += 1
+
+        # Special red pieces
         counter = 0
         for i in range(12, 14):
             self.red[i] = Label(self.red_pieces, image=self.ropo, bg=self.piece_colour)
@@ -365,6 +381,8 @@ class GUI:
                              lambda e, i=-1, j=-1, index=i, s="red": self.piece_on_click(i, j, e, s, index))
             self.red[i].place(relx=4 * 0.126 + 0.126 * counter, y=55)
             counter += 1
+
+        # Final red special pieces
         self.red[14] = Label(self.red_pieces, image=self.ropt, bg=self.piece_colour)
         self.red[14].bind("<Button-1>", lambda e, i=-1, j=-1, index=14, s="red": self.piece_on_click(i, j, e, s, index))
         self.red[14].place(relx=6 * 0.126, y=55)
@@ -372,12 +390,15 @@ class GUI:
         self.red[15].bind("<Button-1>", lambda e, i=-1, j=-1, index=15, s="red": self.piece_on_click(i, j, e, s, index))
         self.red[15].place(relx=7 * 0.126, y=55)
 
+        # Initialize blue piece tracking list
         btptl1, btptl2, btptl3, btptl4, btptl5, btptl6, btptl7, btptl8, bzptl1, bzptl2, bzptl3, bzptl4, bopol1, bopol2, boptl, bzpol = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.blue = [btptl1, btptl2, btptl3, btptl4, btptl5, btptl6, btptl7, btptl8, bzptl1, bzptl2, bzptl3, bzptl4,
                      bopol1,
                      bopol2,
                      boptl, bzpol]
+
+        # Create first row of blue pieces
         counter = 0
         for i in range(8):
             self.blue[i] = Label(self.blue_pieces, image=self.btpt, bg=self.piece_colour)
@@ -385,6 +406,8 @@ class GUI:
                               lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
             self.blue[i].place(relx=0.126 * counter)
             counter += 1
+
+        # Second row of blue pieces
         counter = 0
         for i in range(8, 12):
             self.blue[i] = Label(self.blue_pieces, image=self.bzpt, bg=self.piece_colour)
@@ -392,6 +415,8 @@ class GUI:
                               lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
             self.blue[i].place(relx=0.126 * counter, y=55)
             counter += 1
+
+        # Special blue pieces
         counter = 0
         for i in range(12, 14):
             self.blue[i] = Label(self.blue_pieces, image=self.bopo, bg=self.piece_colour)
@@ -399,6 +424,8 @@ class GUI:
                               lambda e, i=-1, j=-1, index=i, s="blue": self.piece_on_click(i, j, e, s, index))
             self.blue[i].place(relx=4 * 0.126 + 0.126 * counter, y=55)
             counter += 1
+
+        # Final blue special pieces
         self.blue[14] = Label(self.blue_pieces, image=self.bopt, bg=self.piece_colour)
         self.blue[14].bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=14, s="blue": self.piece_on_click(i, j, e, s, index))
