@@ -46,27 +46,35 @@ class start_menu:
         self.menu.destroy()  # Close menu window
         self.running = "multi"  # Set mode to local multiplayer
 
+    def online(self):
+        self.menu.destroy()
+        self.running = "online"
+
 
 class Choosing:
+    # Initialize the choosing window and UI components.
     def __init__(self):
-        self.choosing = Tk()
-        self.choosing.geometry("1000x600")
-        self.choice = Label(self.choosing, text="Choose your side")
-        self.red = Button(self.choosing, text="Red", bg="red", height="7", width="20", command=self.red)
-        self.blue = Button(self.choosing, text="Blue", bg="blue", height="7", width="20", command=self.blue)
+        self.choosing = Tk()  # Create the main Tkinter window.
+        self.choosing.geometry("1000x600")  # Set the window size.
+        self.choice = Label(self.choosing, text="Choose your side")  # Label for side selection.
+        self.red = Button(self.choosing, text="Red", bg="red", height="7", width="20", command=self.red)  # Button for choosing Red.
+        self.blue = Button(self.choosing, text="Blue", bg="blue", height="7", width="20", command=self.blue)  # Button for choosing Blue.
         Side = ""
         self.choice.pack()
         self.red.pack()
         self.blue.pack()
-        self.choosing.mainloop()
+        self.choosing.mainloop()  # Start the Tkinter event loop.
 
+    # Handle selection of the red side.
     def red(self):
         self.choosing.destroy()
-        self.Side = "red"
+        self.Side = "red"  # Set the selected side to red.
 
+    # Handle selection of the blue side.
     def blue(self):
         self.choosing.destroy()
-        self.Side = "blue"
+        self.Side = "blue"  # Set the selected side to blue.
+
 
 
 class online_choosing:
