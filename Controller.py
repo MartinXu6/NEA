@@ -140,7 +140,13 @@ def multi_players(colour):
         while True:
             # red move cycle
             if Game.winner:
-                gui.game_won(Game.winner)
+                if colour == "blue":
+                    if Game.winner == "red":
+                        gui.game_won("blue")
+                    else:
+                        gui.game_won("red")
+                else:
+                    gui.game_won(Game.winner)
                 break
             while True:
                 gui.root.update()
@@ -321,7 +327,13 @@ def multi_players(colour):
 
             # blue move cycle
             if Game.winner:
-                gui.game_won(Game.winner)
+                if colour == "blue":
+                    if Game.winner == "red":
+                        gui.game_won("blue")
+                    else:
+                        gui.game_won("red")
+                else:
+                    gui.game_won(Game.winner)
                 break
             while True:
                 gui.root.update()
