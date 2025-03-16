@@ -153,36 +153,48 @@ class GUI:
         self.root.destroy()
 
     def board_on_click(self, i, j, event):
+        # Handle board square clicks after piece selection
         if self.clicked_piece[0] != -1 and self.clicked_piece[1] != -1:
-            self.destination = (i, j)
+            self.destination = (i, j)  # Set target position
+
+            # Red side move validation
             if self.clicked_piece[0] == "red":
+                # Check for blue side captures
                 for location in range(len(self.blue_locations)):
                     if self.blue_locations[location] == (i, j):
+                        # Register capture of blue piece
                         self.destination = (-1, -1)
                         self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
                         self.captured = ("blue", location, 0)
                         self.clicked_piece = (-1, -1, 0)
                         break
-                else:
+                else:  # No blue piece found at destination
+                    # Check for red self-captures (special cases)
                     for location in range(len(self.red_captured)):
                         if self.red_locations[self.red_captured[location]] == (i, j):
+                            # Register self-capture
                             self.destination = (-1, -1)
                             self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
                             self.captured = ("red", self.red_captured[location], 1)
                             self.clicked_piece = (-1, -1, 0)
                             break
 
+            # Blue side move validation (mirror of red logic)
             elif self.clicked_piece[0] == "blue":
+                # Check for red side captures
                 for location in range(len(self.red_locations)):
                     if self.red_locations[location] == (i, j):
+                        # Register capture of red piece
                         self.destination = (-1, -1)
                         self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
                         self.captured = ("red", location, 0)
                         self.clicked_piece = (-1, -1, 0)
                         break
-                else:
+                else:  # No red piece found at destination
+                    # Check for blue self-captures (special cases)
                     for location in range(len(self.blue_captured)):
                         if self.blue_locations[self.blue_captured[location]] == (i, j):
+                            # Register self-capture
                             self.destination = (-1, -1)
                             self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
                             self.captured = ("blue", self.blue_captured[location], 1)
@@ -190,104 +202,128 @@ class GUI:
                             break
 
     def piece_on_click(self, i, j, event, side, index):
+        # Handle piece selection and interaction logic
         if side == "red":
+            # Red side selection logic
             if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+                # Select new red piece if none selected
                 self.clicked_piece = ("red", index, 0)
             else:
                 if self.clicked_piece[0] == "red":
+                    # Same-side deselection logic
                     if self.clicked_piece[2] == 0:
-                        self.red[self.clicked_piece[1]].config(bg="white")
+                        self.red[self.clicked_piece[1]].config(bg="white")  # Reset red piece color
                     elif self.clicked_piece[2] == 1:
-                        self.blue[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1, 0)
+                        self.blue[self.clicked_piece[1]].config(bg="white")  # Reset captured blue piece
+                    self.clicked_piece = (-1, -1, 0)  # Clear selection
                     for i in self.displayed_pieces:
                         i.destroy()
-                        self.displayed_pieces = []
+                        self.displayed_pieces = []  # Clear temporary visuals
                 else:
+                    # Cross-side capture resolution
                     self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
-                    self.captured = (side, index, 0)
+                    self.captured = (side, index, 0)  # Store capture metadata
+                    # Reset previous selection visuals
                     if self.clicked_piece[2] == 0:
-                        self.blue[self.clicked_piece[1]].config(bg="white")
+                        self.blue[self.clicked_piece[1]].config(bg="white")  # Clear blue selection
                     elif self.clicked_piece[2] == 1:
-                        self.red[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1, 0)
+                        self.red[self.clicked_piece[1]].config(bg="white")  # Clear red captured selection
+                    self.clicked_piece = (-1, -1, 0)  # Reset selection state
                     for i in self.displayed_pieces:
                         i.destroy()
-                        self.displayed_pieces = []
+                        self.displayed_pieces = []  # Clear UI indicators
+
+        # Mirror logic for blue side interactions
         else:
             if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+                # Select new blue piece if none selected
                 self.clicked_piece = ("blue", index, 0)
             else:
                 if self.clicked_piece[0] == "blue":
+                    # Same-side deselection logic
                     if self.clicked_piece[2] == 0:
-                        self.blue[self.clicked_piece[1]].config(bg="white")
+                        self.blue[self.clicked_piece[1]].config(bg="white")  # Reset blue piece color
                     elif self.clicked_piece[2] == 1:
-                        self.red[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1, 0)
+                        self.red[self.clicked_piece[1]].config(bg="white")  # Reset captured red piece
+                    self.clicked_piece = (-1, -1, 0)  # Clear selection
                     for i in self.displayed_pieces:
                         i.destroy()
-                        self.displayed_pieces = []
+                        self.displayed_pieces = []  # Clear temporary visuals
                 else:
+                    # Cross-side capture resolution
                     self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
-                    self.captured = (side, index, 0)
+                    self.captured = (side, index, 0)  # Store capture metadata
+                    # Reset previous selection visuals
                     if self.clicked_piece[2] == 0:
-                        self.red[self.clicked_piece[1]].config(bg="white")
+                        self.red[self.clicked_piece[1]].config(bg="white")  # Clear red selection
                     elif self.clicked_piece[2] == 1:
-                        self.blue[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1, 0)
+                        self.blue[self.clicked_piece[1]].config(bg="white")  # Clear blue captured selection
+                    self.clicked_piece = (-1, -1, 0)  # Reset selection state
                     for i in self.displayed_pieces:
                         i.destroy()
-                        self.displayed_pieces = []
+                        self.displayed_pieces = []  # Clear UI indicators
 
     def captured_on_click(self, i, j, event, side, index):
+        # Handle captured piece interaction logic
         if side == "red":
+            # Red captured piece selection
             if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+                # Select captured red piece (flag=1 indicates captured state)
                 self.clicked_piece = ("red", index, 1)
             else:
                 if self.clicked_piece[0] == "red":
+                    # Same-side captured piece deselection
                     if self.clicked_piece[2] == 0:
-                        self.red[self.clicked_piece[1]].config(bg="white")
+                        self.red[self.clicked_piece[1]].config(bg="white")  # Reset active piece
                     elif self.clicked_piece[2] == 1:
-                        self.blue[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1, 0)
+                        self.blue[self.clicked_piece[1]].config(bg="white")  # Reset captured piece
+                    self.clicked_piece = (-1, -1, 0)  # Clear selection
                     for i in self.displayed_pieces:
                         i.destroy()
-                        self.displayed_pieces = []
+                        self.displayed_pieces = []  # Clear UI indicators
                 else:
+                    # Cross-side capture resolution with captured piece
                     self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
-                    self.captured = (side, index, 1)
+                    self.captured = (side, index, 1)  # Store captured piece metadata
+                    # Reset previous selection visuals
                     if self.clicked_piece[2] == 0:
-                        self.blue[self.clicked_piece[1]].config(bg="white")
+                        self.blue[self.clicked_piece[1]].config(bg="white")  # Clear active blue
                     elif self.clicked_piece[2] == 1:
-                        self.red[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1, 0)
+                        self.red[self.clicked_piece[1]].config(bg="white")  # Clear captured red
+                    self.clicked_piece = (-1, -1, 0)  # Reset selection
                     for i in self.displayed_pieces:
                         i.destroy()
-                        self.displayed_pieces = []
+                        self.displayed_pieces = []  # Clear temporary elements
+
+        # Mirror logic for blue captured pieces
         else:
             if self.clicked_piece[0] == -1 and self.clicked_piece[1] == -1:
+                # Select captured blue piece (flag=1 indicates captured state)
                 self.clicked_piece = ("blue", index, 1)
             else:
                 if self.clicked_piece[0] == "blue":
+                    # Same-side captured piece deselection
                     if self.clicked_piece[2] == 0:
-                        self.blue[self.clicked_piece[1]].config(bg="white")
+                        self.blue[self.clicked_piece[1]].config(bg="white")  # Reset active piece
                     elif self.clicked_piece[2] == 1:
-                        self.red[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1, 0)
+                        self.red[self.clicked_piece[1]].config(bg="white")  # Reset captured piece
+                    self.clicked_piece = (-1, -1, 0)  # Clear selection
                     for i in self.displayed_pieces:
                         i.destroy()
-                        self.displayed_pieces = []
+                        self.displayed_pieces = []  # Clear UI indicators
                 else:
+                    # Cross-side capture resolution with captured piece
                     self.capturing = (self.clicked_piece[0], self.clicked_piece[1], self.clicked_piece[2])
-                    self.captured = (side, index, 1)
+                    self.captured = (side, index, 1)  # Store captured piece metadata
+                    # Reset previous selection visuals
                     if self.clicked_piece[2] == 0:
-                        self.red[self.clicked_piece[1]].config(bg="white")
+                        self.red[self.clicked_piece[1]].config(bg="white")  # Clear active red
                     elif self.clicked_piece[2] == 1:
-                        self.blue[self.clicked_piece[1]].config(bg="white")
-                    self.clicked_piece = (-1, -1, 0)
+                        self.blue[self.clicked_piece[1]].config(bg="white")  # Clear captured blue
+                    self.clicked_piece = (-1, -1, 0)  # Reset selection
                     for i in self.displayed_pieces:
                         i.destroy()
-                        self.displayed_pieces = []
+                        self.displayed_pieces = []  # Clear temporary elements
 
     def initialise_GUI(self):
         # Window configuration and title
@@ -441,128 +477,184 @@ class GUI:
         # blue[15].place(relx=0 * 0.126, y=0)
 
     def captured_deploy(self, side, piece, end):
+        # Toggle turn indicator between red/blue
         previous_colour = self.mover_display.cget("bg")
         self.mover_display.config(bg="red") if previous_colour == "blue" else self.mover_display.config(bg="blue")
+
         if side == "red":
+            # Redeploy captured blue piece to red side control
             previous_image = self.blue[piece].cget("image")
             self.blue[piece].destroy()
             self.blue.pop(piece)
+
+            # Create new board-anchored piece with captured image
             new_piece = Label(self.main_board, image=previous_image, bg="white")
             new_piece.bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=piece, s="red": self.captured_on_click(i, j, e, s, index))
+
+            # Update blue piece tracking (cross-side redeployment)
             self.blue.insert(piece, new_piece)
-            self.blue[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
-            self.blue_locations[piece] = end
-            self.red_spots.append(self.blue_taken_spots[piece])
-            self.blue_taken_spots[piece] = -1
+            self.blue[piece].place(x=5 + 57 * end[1], y=403 - 57 * (7 - end[0]))  # Grid-to-pixel conversion
+            self.blue_locations[piece] = end  # Update positional record
+
+            # Slot management for captured pieces
+            self.red_spots.append(self.blue_taken_spots[piece])  # Free redeployment slot
+            self.blue_taken_spots[piece] = -1  # Mark slot as occupied
+
         else:
+            # Mirror logic for red piece redeployment to blue side
             previous_image = self.red[piece].cget("image")
             self.red[piece].destroy()
             self.red.pop(piece)
+
             new_piece = Label(self.main_board, image=previous_image, bg="white")
             new_piece.bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=piece, s="blue": self.captured_on_click(i, j, e, s, index))
+
             self.red.insert(piece, new_piece)
-            self.red[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
+            self.red[piece].place(x=5 + 57 * end[1], y=403 - 57 * (7 - end[0]))  # Same coordinate system
             self.red_locations[piece] = end
+
+            # Cross-side slot management
             self.blue_spots.append(self.red_taken_spots[piece])
             self.red_taken_spots[piece] = -1
 
     def make_deploy(self, side, piece, end):
+        # Handle piece redeployment mechanics
         if side == "red":
+            # Preserve piece visual identity before recreation
             previous_image = self.red[piece].cget("image")
+
+            # Destroy old UI element and list entry
             self.red[piece].destroy()
             self.red.pop(piece)
+
+            # Create new board-anchored piece with preserved image
             new_piece = Label(self.main_board, image=previous_image, bg="white")
             new_piece.bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=piece, s="red": self.piece_on_click(i, j, e, s, index))
+
+            # Update red piece tracking
             self.red.insert(piece, new_piece)
-            self.red[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
-            self.red_locations[piece] = end
+            self.red[piece].place(x=5 + 57 * end[1], y=403 - 57 * (7 - end[0]))  # Coordinate calculation for board grid
+            self.red_locations[piece] = end  # Update positional tracking
+
+            # Manage deployment slot availability
             if self.red_taken_spots[piece] != -1:
-                self.red_spots.append(self.red_taken_spots[piece])
-                self.red_taken_spots[piece] = -1
+                self.red_spots.append(self.red_taken_spots[piece])  # Free previous slot
+                self.red_taken_spots[piece] = -1  # Mark current slot as occupied
+
+        # Mirror deployment logic for blue side
         else:
+            # Blue side piece recreation flow
             previous_image = self.blue[piece].cget("image")
             self.blue[piece].destroy()
             self.blue.pop(piece)
+
             new_piece = Label(self.main_board, image=previous_image, bg="white")
             new_piece.bind("<Button-1>",
                            lambda e, i=-1, j=-1, index=piece, s="blue": self.piece_on_click(i, j, e, s, index))
+
             self.blue.insert(piece, new_piece)
-            self.blue[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
+            self.blue[piece].place(x=5 + 57 * end[1], y=403 - 57 * (7 - end[0]))  # Identical coordinate math
             self.blue_locations[piece] = end
+
             if self.blue_taken_spots[piece] != -1:
                 self.blue_spots.append(self.blue_taken_spots[piece])
                 self.blue_taken_spots[piece] = -1
 
     def make_move(self, side, piece, end, CAPTURED):
+        # Toggle turn indicator between red/blue
         previous_colour = self.mover_display.cget("bg")
         self.mover_display.config(bg="red") if previous_colour == "blue" else self.mover_display.config(bg="blue")
+
         if side == "red":
+            # Handle red side movement logic
             if CAPTURED == 0:
+                # Move active red piece normally
                 previous_image = self.red[piece].cget("image")
                 self.red[piece].destroy()
                 self.red.pop(piece)
+
+                # Recreate piece at new position with standard click handler
                 new_piece = Label(self.main_board, image=previous_image, bg="white")
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=piece, s="red": self.piece_on_click(i, j, e, s, index))
                 self.red.insert(piece, new_piece)
-                self.red[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
-                self.red_locations[piece] = end
+                self.red[piece].place(x=5 + 57 * end[1], y=403 - 57 * (7 - end[0]))  # Grid positioning
+                self.red_locations[piece] = end  # Update location tracking
             else:
+                # Handle captured blue piece redeployment
                 previous_image = self.blue[piece].cget("image")
                 self.blue[piece].destroy()
                 self.blue.pop(piece)
+
+                # Create captured piece under red control
                 new_piece = Label(self.main_board, image=previous_image, bg="white")
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=piece, s="red": self.captured_on_click(i, j, e, s, index))
                 self.blue.insert(piece, new_piece)
-                self.blue[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
-                self.blue_locations[piece] = end
+                self.blue[piece].place(x=5 + 57 * end[1], y=403 - 57 * (7 - end[0]))  # Same positioning logic
+                self.blue_locations[piece] = end  # Track as blue piece under red control
+
+        # Mirror logic for blue side moves
         else:
             if CAPTURED == 0:
+                # Move active blue piece normally
                 previous_image = self.blue[piece].cget("image")
                 self.blue[piece].destroy()
                 self.blue.pop(piece)
+
                 new_piece = Label(self.main_board, image=previous_image, bg="white")
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=piece, s="blue": self.piece_on_click(i, j, e, s, index))
                 self.blue.insert(piece, new_piece)
-                self.blue[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
+                self.blue[piece].place(x=5 + 57 * end[1], y=403 - 57 * (7 - end[0]))
                 self.blue_locations[piece] = end
             else:
+                # Handle captured red piece redeployment
                 previous_image = self.red[piece].cget("image")
                 self.red[piece].destroy()
                 self.red.pop(piece)
+
                 new_piece = Label(self.main_board, image=previous_image, bg="white")
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=piece, s="blue": self.captured_on_click(i, j, e, s, index))
                 self.red.insert(piece, new_piece)
-                self.red[piece].place(x=5+57*end[1], y=403-57*(7-end[0]))
-                self.red_locations[piece] = end
+                self.red[piece].place(x=5 + 57 * end[1], y=403 - 57 * (7 - end[0]))
+                self.red_locations[piece] = end  # Track as red piece under blue control
 
     def display_movable(self, movable):
+        # Visualize valid movement positions on the board
         for place in movable:
+            # Create temporary position indicator (small black square)
             new_label = Label(self.main_board, bg="black", height=1, width=2)
+
+            # Bind click to board interaction handler with grid coordinates
             new_label.bind("<Button-1>", lambda e, i=place[0], j=place[1]: self.board_on_click(i, j, e))
-            print(place[0],place[1])
-            new_label.place(x=19+57*place[1], y=415-57*(7-place[0]) )
+
+            # Position marker using grid-to-pixel conversion
+            new_label.place(x=19 + 57 * place[1], y=415 - 57 * (7 - place[0]))
+
+            # Track temporary UI elements for later cleanup
             self.displayed_pieces.append(new_label)
 
     def got_captured(self, side, index, reverse_captured):
+        # Determine image for captured piece based on type and side
         if side == "red":
+            # Handle blue piece types for red-side captures
             if 0 <= index <= 7:
-                new_image = self.btpt
+                new_image = self.btpt  # 2-2 piece
             elif 8 <= index <= 11:
-                new_image = self.bzpt
+                new_image = self.bzpt  # 0-2 piece
             elif 12 <= index <= 13:
-                new_image = self.bopo
+                new_image = self.bopo  # 1-1 piece
             elif index == 14:
-                new_image = self.bopt
+                new_image = self.bopt  # 1-2 piece
             elif index == 15:
-                return
+                return  # 0-1 piece, in which case the game ends
         elif side == "blue":
+            # Handle red piece types for blue-side captures
             if 0 <= index <= 7:
                 new_image = self.rtpt
             elif 8 <= index <= 11:
@@ -573,23 +665,20 @@ class GUI:
                 new_image = self.ropt
             elif index == 15:
                 return
+        # Create and position captured piece widget
         if side == "red":
             new_piece = Label(self.blue_pieces, image=new_image, bg="white")
+            # Handle capture reversal logic
             if reverse_captured:
-                self.blue.pop(index)
-                self.blue.insert(index, new_piece)
-                self.blue_captured.remove(index)
+                self.blue.pop(index)  # Remove from blue list
+                self.blue.insert(index, new_piece)  # Reinsert restored piece
+                self.blue_captured.remove(index)  # Update captured tracker
             else:
-                self.red.pop(index)
-                self.red.insert(index, new_piece)
-                self.red_captured.append(index)
-            if reverse_captured:
-                new_piece.bind("<Button-1>",
-                               lambda e, i=-1, j=-1, index=index, s="blue": self.piece_on_click(i, j, e, s, index))
-            else:
-                new_piece.bind("<Button-1>",
-                               lambda e, i=-1, j=-1, index=index, s="blue": self.captured_on_click(i, j, e, s, index))
+                self.red.pop(index)  # Remove from red list
+                self.red.insert(index, new_piece)  # Add to captured area
+                self.red_captured.append(index)  # Mark as captured
         else:
+            # Mirror logic for blue-side captures
             new_piece = Label(self.red_pieces, image=new_image, bg="white")
             if reverse_captured:
                 self.red.pop(index)
@@ -599,29 +688,46 @@ class GUI:
                 self.blue.pop(index)
                 self.blue.insert(index, new_piece)
                 self.blue_captured.append(index)
+
+        # Bind click handlers based on capture state
+        if side == "red":
+            if reverse_captured:
+                # Restored pieces use normal interaction
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=index, s="blue": self.piece_on_click(i, j, e, s, index))
+            else:
+                # Captured pieces use special interaction
+                new_piece.bind("<Button-1>",
+                               lambda e, i=-1, j=-1, index=index, s="blue": self.captured_on_click(i, j, e, s, index))
+        else:
+            # Mirror handler binding for blue side
             if reverse_captured:
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=index, s="red": self.piece_on_click(i, j, e, s, index))
             else:
                 new_piece.bind("<Button-1>",
                                lambda e, i=-1, j=-1, index=index, s="red": self.captured_on_click(i, j, e, s, index))
+
+        # Update board position tracking
         if side == "blue":
             if reverse_captured:
-                self.red_locations[index] = (-1, -1)
+                self.red_locations[index] = (-1, -1)  # Remove from board
             else:
-                self.blue_locations[index] = (-1, -1)
+                self.blue_locations[index] = (-1, -1)  # Remove from board
         else:
             if reverse_captured:
                 self.blue_locations[index] = (-1, -1)
             else:
                 self.red_locations[index] = (-1, -1)
+
+        # Manage deployment slot allocation
         if side == "red":
-            spot = min(self.blue_spots)
-            self.blue_spots.remove(spot)
+            spot = min(self.blue_spots)  # Find first available slot
+            self.blue_spots.remove(spot)  # Reserve slot
             if reverse_captured:
-                self.blue_taken_spots[index] = spot
+                self.blue_taken_spots[index] = spot  # Track blue's reclaimed slot
             else:
-                self.red_taken_spots[index] = spot
+                self.red_taken_spots[index] = spot  # Track red's captured slot
         else:
             spot = min(self.red_spots)
             self.red_spots.remove(spot)
@@ -629,11 +735,13 @@ class GUI:
                 self.red_taken_spots[index] = spot
             else:
                 self.blue_taken_spots[index] = spot
+
+        # Position piece in captured panel
         if spot > 7:
-            spot -= 8
-            new_piece.place(relx=0.126 * spot, y=55)
+            spot -= 8  # Second row adjustment
+            new_piece.place(relx=0.126 * spot, y=55)  # Bottom row position
         else:
-            new_piece.place(relx=0.126 * spot, y=0)
+            new_piece.place(relx=0.126 * spot, y=0)  # Top row position
 
     def save(self):
         print(self.stored_moves)
