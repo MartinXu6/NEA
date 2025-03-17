@@ -749,19 +749,29 @@ class GUI:
         quit()
 
     def game_won(self, side):
+        # Display a game over message depending on the winning side.
         if side == "red":
             Game_over = Label(self.root, text=f"GAME OVER RED WON!", height=10, width=20, font=50, bg="red")
         else:
             Game_over = Label(self.root, text=f"GAME OVER BLUE WON!", height=10, width=20, font=50, bg="blue")
+
+        # Save the current game moves and show the game over message.
         self.stored_moves = self.moves.get('1.0', END)
         Game_over.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.root.update()
         time.sleep(2)
+
+        # Close the main game window.
         self.root.destroy()
-        self.new = Tk()
-        self.new.geometry("500x500")
-        save = Button(self.new, text="Save Game", width=10, height=5, bg="grey", command=self.save)
-        save.place(relx=0.5, rely=0.3, anchor="center")
-        while True:
-            self.new.update()
+
+        # Open a new window to offer post-game options.
+        # self.new = Tk()
+        # self.new.geometry("500x500")
+        # save = Button(self.new, text="Save Game", width=10, height=5, bg="grey", command=self.save)
+        # save.place(relx=0.5, rely=0.3, anchor="center")
+
+        # Keep the new window running for user interaction.
+        # while True:
+        #     self.new.update()
+
         # quit()
