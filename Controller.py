@@ -15,76 +15,108 @@ import tkinter.scrolledtext as st
 
 
 def multi_players(colour):
-    # colours = ["red", "blue", "green", "white"]
-    gui.mover_display.config(bg=colour)
-    if colour == "blue":
-        gui.evaluation_red.config(bg="blue")
-        gui.evaluation_blue.config(bg="red")
-        gui.evaluation_red_text.config(text="Blue: 0.5")
-        gui.evaluation_blue_text.config(text="Red: 0.5")
-    while True:
-        red_deployed_index = []
-        red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
-                          (7, 0), (7, 1), (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (7, 7)]
-        blue_deployed_index = []
-        blue_deployable = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7),
-                           (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7)]
-        red_got_captured = []
-        blue_got_captured = []
+    # Set up player colour display
+    # colours = ["red", "blue", "green", "white"]  # Available colour options
+    gui.mover_display.config(bg=colour)  # Set turn indicator colour
 
-        # red deployment cycle
+    # Configure evaluation bars for blue player perspective
+    if colour == "blue":
+        gui.evaluation_red.config(bg="blue")  # Left bar shows blue's advantage
+        gui.evaluation_blue.config(bg="red")  # Right bar shows red's advantage
+        gui.evaluation_red_text.config(text="Blue: 0.5")  # Update score labels
+        gui.evaluation_blue_text.config(text="Red: 0.5")
+
+    # Main game loop
+    while True:
+        # Initialize deployment tracking
+        red_deployed_index = []  # Track deployed red piece indices
+        red_deployable = [(6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7),
+                          (7, 0), (7, 1), (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (7, 7)]  # Red's deployment grid
+        blue_deployed_index = []  # Track deployed blue piece indices
+        blue_deployable = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7),
+                           (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7)]  # Blue's deployment grid
+        red_got_captured = []  # (Currently unused in shown code)
+        blue_got_captured = []  # (Currently unused in shown code)
+
+        # Red deployment phase
         while True:
-            gui.root.update()
-            if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
+            gui.root.update()  # Refresh GUI window
+
+            # Handle piece selection and deployment
+            if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:  # Check valid selection
+                # Red piece deployment logic
                 if gui.clicked_piece[0] == "red" and gui.clicked_piece[1] not in red_deployed_index:
+                    # Highlight selected piece
                     gui.red[gui.clicked_piece[1]].config(bg="black")
+
+                    # Show available deployment spots if none displayed
                     if not gui.displayed_pieces:
-                        gui.display_movable(red_deployable)
+                        gui.display_movable(red_deployable)  # Display movement markers
+
+                    # Process deployment attempt
                     if gui.destination != (-1, -1):
+                        # Validate deployment through game logic
                         if Game.deploy(Game.reds[gui.clicked_piece[1]], gui.destination):
+                            # Cleanup UI elements
                             for i in gui.displayed_pieces:
                                 i.destroy()
                                 gui.displayed_pieces = []
+
+                            # Execute deployment
                             gui.make_deploy(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination)
+
+                            # Update deployment tracking
                             red_deployed_index.append(gui.clicked_piece[1])
-                            red_deployable.remove(gui.destination)
+                            red_deployable.remove(gui.destination)  # Remove used spot
+
+                            # Reset selection state
                             gui.destination = (-1, -1)
                             gui.clicked_piece = (-1, -1)
-                        else:
+                        else:  # Handle invalid deployment
+                            # Reset piece highlight
                             gui.red[gui.clicked_piece[1]].config(bg="white")
+                            # Cleanup movement markers
                             for i in gui.displayed_pieces:
                                 i.destroy()
                                 gui.displayed_pieces = []
+                            # Reset selection
                             gui.clicked_piece = (-1, -1)
                             gui.destination = (-1, -1)
-                else:
+                else:  # Invalid selection reset
                     gui.clicked_piece = (-1, -1)
 
+            # Update move history display
             if Game.current_move:
-                if colour == "red":
+                if colour == "red":  # Current player's perspective
                     gui.moves.configure(state="normal")
+                    # Format: "r [index] [from] --->[to]"
                     gui.moves.insert(INSERT,
                                      f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                     gui.moves.configure(state="disable")
-                else:
+                else:  # Mirror perspective for opponent
                     if Game.current_move[0] == "red":
                         gui.moves.configure(state="normal")
+                        # Show blue's view of red's move
                         gui.moves.insert(INSERT,
                                          f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                         gui.moves.configure(state="disable")
                     else:
                         gui.moves.configure(state="normal")
+                        # Show blue's own moves
                         gui.moves.insert(INSERT,
                                          f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                         gui.moves.configure(state="disable")
 
-                Game.current_move = []
+                Game.current_move = []  # Reset move buffer
+
+            # Check if all 16 red pieces deployed
             if len(red_deployed_index) == 16:
+                # Toggle turn indicator colour
                 previous_colour = gui.mover_display.cget("bg")
-                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
-                    bg="blue")
+                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(bg="blue")
                 break
-        # blue deployment cycle
+
+        # Blue deployment phase (mirror of red logic)
         while True:
             gui.root.update()
             if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
@@ -132,66 +164,83 @@ def multi_players(colour):
                 Game.current_move = []
             if len(blue_deployed_index) == 16:
                 previous_colour = gui.mover_display.cget("bg")
-                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(
-                    bg="blue")
+                gui.mover_display.config(bg="red") if previous_colour == "blue" else gui.mover_display.config(bg="blue")
                 break
 
-        Game.deployed = True
+        # Main game phase
+        Game.deployed = True  # Flag indicating deployment completed
         while True:
-            # red move cycle
-            if Game.winner:
-                if colour == "blue":
+            # Red move cycle
+            if Game.winner:  # Victory check
+                if colour == "blue":  # Handle opponent perspective
                     if Game.winner == "red":
-                        gui.game_won("blue")
+                        gui.game_won("blue")  # Show loss screen for blue
                     else:
-                        gui.game_won("red")
+                        gui.game_won("red")  # Show win screen for blue
                 else:
-                    gui.game_won(Game.winner)
+                    gui.game_won(Game.winner)  # Direct victory display
                 break
+
+            # Red movement logic
             while True:
-                gui.root.update()
+                gui.root.update()  # Refresh GUI
+
+                # Handle piece selection and movement
                 if gui.clicked_piece[0] != -1 and gui.clicked_piece[1] != -1:
                     if gui.clicked_piece[0] == "red":
-                        if gui.clicked_piece[2] == 0:
+                        # Calculate movable positions
+                        if gui.clicked_piece[2] == 0:  # Active red piece
                             red_movable = []
-                            if gui.red_locations[gui.clicked_piece[1]] == (-1, -1):
-                                gui.red[gui.clicked_piece[1]].config(bg="black")
+                            if gui.red_locations[gui.clicked_piece[1]] == (-1, -1):  # Undeployed piece
+                                gui.red[gui.clicked_piece[1]].config(bg="black")  # Highlight
+                                # Find all empty board positions
                                 for i in range(8):
                                     for j in range(8):
-                                        if Game.board[i][j] == 0:
+                                        if Game.board[i][j] == 0:  # Check board state
                                             red_movable.append((i, j))
-                            else:
+                            else:  # Already deployed piece
                                 gui.red[gui.clicked_piece[1]].config(bg="black")
+                                # Get valid moves from game logic
                                 red_movable = Game.reds[gui.clicked_piece[1]].movable(Game.board)
-                        else:
+                        else:  # Captured blue piece
                             red_movable = []
-                            if gui.blue_locations[gui.clicked_piece[1]] == (-1, -1):
+                            if gui.blue_locations[gui.clicked_piece[1]] == (-1, -1):  # Undeployed captured piece
                                 gui.blue[gui.clicked_piece[1]].config(bg="black")
+                                # Find all empty positions
                                 for i in range(8):
                                     for j in range(8):
                                         if Game.board[i][j] == 0:
                                             red_movable.append((i, j))
-                            else:
+                            else:  # Deployed captured piece
                                 gui.blue[gui.clicked_piece[1]].config(bg="black")
+                                # Get valid moves from game logic
                                 red_movable = Game.blues[gui.clicked_piece[1]].movable(Game.board)
+
+                        # Show movement options
                         if not gui.displayed_pieces:
-                            gui.display_movable(red_movable)
+                            gui.display_movable(red_movable)  # Display markers
+
+                        # Process movement attempt
                         if gui.destination != (-1, -1):
+                            # Determine piece type and location
                             current_piece = ""
                             location = ""
                             captured = 0
-                            if gui.clicked_piece[2] == 0:
+                            if gui.clicked_piece[2] == 0:  # Active red piece
                                 current_piece = Game.reds[gui.clicked_piece[1]]
                                 location = gui.red_locations[gui.clicked_piece[1]]
                                 captured = 0
-                            else:
+                            else:  # Captured blue piece
                                 current_piece = Game.blues[gui.clicked_piece[1]]
                                 location = gui.blue_locations[gui.clicked_piece[1]]
                                 captured = 1
-                            if location == (-1, -1):
-                                if gui.clicked_piece[2] == 1:
+
+                            # Handle deployment/movement
+                            if location == (-1, -1):  # New deployment
+                                if gui.clicked_piece[2] == 1:  # Deploy captured piece
                                     if Game.move(Game.blues[gui.clicked_piece[1]], gui.destination, "red"):
                                         if gui.destination in red_movable:
+                                            # Cleanup and execute
                                             for i in gui.displayed_pieces:
                                                 i.destroy()
                                                 gui.displayed_pieces = []
@@ -199,13 +248,15 @@ def multi_players(colour):
                                             gui.destination = (-1, -1)
                                             gui.clicked_piece = (-1, -1, 0)
                                             break
-                                else:
+                                else:  # Deploy regular piece
                                     if Game.move(Game.reds[gui.clicked_piece[1]], gui.destination, "red"):
                                         if gui.destination in red_movable:
+                                            # Cleanup and execute
                                             for i in gui.displayed_pieces:
                                                 i.destroy()
                                                 gui.displayed_pieces = []
                                             gui.make_deploy("red", gui.clicked_piece[1], gui.destination)
+                                            # Toggle turn indicator
                                             previous_colour = gui.mover_display.cget("bg")
                                             gui.mover_display.config(
                                                 bg="red") if previous_colour == "blue" else gui.mover_display.config(
@@ -213,35 +264,42 @@ def multi_players(colour):
                                             gui.destination = (-1, -1)
                                             gui.clicked_piece = (-1, -1, 0)
                                             break
-                            else:
+                            else:  # Move existing piece
                                 if Game.move(current_piece, gui.destination, "red"):
+                                    # Cleanup and update
                                     for i in gui.displayed_pieces:
                                         i.destroy()
                                         gui.displayed_pieces = []
+                                    # Handle move type
                                     if gui.clicked_piece[2] == 0:
                                         gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination,
                                                       False)
                                     else:
                                         gui.make_move(gui.clicked_piece[0], gui.clicked_piece[1], gui.destination, True)
+                                    # Reset state
                                     gui.destination = (-1, -1)
                                     gui.clicked_piece = (-1, -1, 0)
                                     break
-                                else:
+                                else:  # Invalid move
+                                    # Reset visuals
                                     if gui.clicked_piece[2] == 0:
                                         gui.red[gui.clicked_piece[1]].config(bg="white")
                                     else:
                                         gui.blue[gui.clicked_piece[1]].config(bg="white")
+                                    # Cleanup markers
                                     for i in gui.displayed_pieces:
                                         i.destroy()
                                         gui.displayed_pieces = []
+                                    # Reset selection
                                     gui.clicked_piece = (-1, -1, 0)
                                     gui.destination = (-1, -1)
                     else:
-                        gui.clicked_piece = (-1, -1, 0)
-                else:
+                        gui.clicked_piece = (-1, -1, 0)  # Reset invalid selection
+                else:  # Capture resolution
                     if gui.captured[0] != -1 and gui.captured[1] != -1 and gui.capturing[0] != -1 and gui.capturing[
                         1] != -1:
                         if gui.capturing[0] == "red":
+                            # Resolve capture
                             current_piece = ""
                             position = ""
                             if gui.capturing[2] == 0:
@@ -253,42 +311,44 @@ def multi_players(colour):
                             else:
                                 position = gui.red_locations[gui.captured[1]]
                             if Game.move(current_piece, position, "red"):
+                                # Cleanup UI
                                 for i in gui.displayed_pieces:
                                     i.destroy()
                                     gui.displayed_pieces = []
-                                if gui.captured[2] == 0:
-                                    reverse_captured = False
-                                else:
-                                    reverse_captured = True
+                                # Determine capture type
+                                reverse_captured = False if gui.captured[2] == 0 else True
+                                # Remove captured piece
                                 if gui.captured[2] == 0:
                                     gui.blue[gui.captured[1]].destroy()
                                 else:
                                     gui.red[gui.captured[1]].destroy()
-                                if gui.captured[2] == 0:
-                                    end_point = gui.blue_locations[gui.captured[1]]
-                                else:
-                                    end_point = gui.red_locations[gui.captured[1]]
+                                # Get final position
+                                end_point = gui.blue_locations[gui.captured[1]] if gui.captured[2] == 0 else \
+                                gui.red_locations[gui.captured[1]]
+                                # Execute move and capture
                                 if gui.capturing[2] == 0:
-                                    gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
-                                                  False)
-                                    gui.got_captured("blue", gui.captured[1],
-                                                     reverse_captured)
-                                else:
-                                    gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
-                                                  True)
+                                    gui.make_move(gui.capturing[0], gui.capturing[1], end_point, False)
                                     gui.got_captured("blue", gui.captured[1], reverse_captured)
+                                else:
+                                    gui.make_move(gui.capturing[0], gui.capturing[1], end_point, True)
+                                    gui.got_captured("blue", gui.captured[1], reverse_captured)
+                                # Reset capture state
                                 gui.capturing = (-1, -1, 0)
                                 gui.captured = (-1, -1, 0)
                                 break
+                    # Cleanup capture UI
                     for i in gui.displayed_pieces:
                         i.destroy()
                         gui.displayed_pieces = []
                     gui.captured = (-1, -1, 0)
                     gui.capturing = (-1, -1, 0)
+            # Update evaluation metrics
             if Game.current_move:
+                # Calculate piece values
                 bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
-                eval_red = Minimax.evaluation(Game.board, "red",bench)
+                eval_red = Minimax.evaluation(Game.board, "red", bench)
                 eval_blue = Minimax.evaluation(Game.board, "blue", bench)
+                # Normalize values
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
@@ -296,16 +356,19 @@ def multi_players(colour):
                     eval_red -= eval_blue
                     eval_blue = 1
                 total = eval_red + eval_blue
-                red_width = eval_red / total
-                blue_width = eval_blue / total
+                red_width = eval_red / total  # Percentage of red advantage
+                blue_width = eval_blue / total  # Percentage of blue advantage
+                # Update UI elements
                 if colour == "blue":
                     gui.evaluation_red_text.config(text=f"Blue: {round(red_width, 2)}")
                     gui.evaluation_blue_text.config(text=f"Red: {round(blue_width, 2)}")
                 else:
                     gui.evaluation_red_text.config(text=f"Red: {round(red_width, 2)}")
                     gui.evaluation_blue_text.config(text=f"Blue: {round(blue_width, 2)}")
+                # Resize evaluation bars
                 gui.evaluation_red.config(width=395 * red_width)
                 gui.evaluation_blue.config(width=395 * blue_width)
+                # Update move history
                 if colour == "red":
                     gui.moves.configure(state="normal")
                     gui.moves.insert(INSERT,
@@ -325,7 +388,7 @@ def multi_players(colour):
 
                 Game.current_move = []
 
-            # blue move cycle
+            # Blue move cycle (mirror of red logic)
             if Game.winner:
                 if colour == "blue":
                     if Game.winner == "red":
@@ -456,12 +519,10 @@ def multi_players(colour):
                                 else:
                                     end_point = gui.blue_locations[gui.captured[1]]
                                 if gui.capturing[2] == 0:
-                                    gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
-                                                  False)
+                                    gui.make_move(gui.capturing[0], gui.capturing[1], end_point, False)
                                     gui.got_captured("red", gui.captured[1], reverse_captured)
                                 else:
-                                    gui.make_move(gui.capturing[0], gui.capturing[1], end_point,
-                                                  True)
+                                    gui.make_move(gui.capturing[0], gui.capturing[1], end_point, True)
                                     gui.got_captured("red", gui.captured[1], reverse_captured)
                                 gui.capturing = (-1, -1, 0)
                                 gui.captured = (-1, -1, 0)
@@ -473,8 +534,8 @@ def multi_players(colour):
                     gui.capturing = (-1, -1, 0)
             if Game.current_move:
                 bench = [piece for piece in Game.reds + Game.blues if piece.location == (-1, -1)]
-                eval_red = Minimax.evaluation(Game.board, "red",bench)
-                eval_blue = Minimax.evaluation(Game.board, "blue",bench)
+                eval_red = Minimax.evaluation(Game.board, "red", bench)
+                eval_blue = Minimax.evaluation(Game.board, "blue", bench)
                 if eval_red < 1:
                     eval_blue -= eval_red
                     eval_red = 1
