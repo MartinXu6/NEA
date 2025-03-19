@@ -15,7 +15,7 @@ def evaluation(current_position, max_player, bench):
                       [1, 2, 2, 2, 2, 2, 2, 1], ]
 
     # Static values assigned to piece types to reflect their relative importance
-    piece_value = {(2, 2): 3, (0, 2): 3, (1, 1): 4, (1, 2): 6, (0, 1): 1}
+    piece_value = {(2, 2): 3, (0, 2): 3, (1, 1): 5, (1, 2): 9, (0, 1): 1}
 
     total_value = 0
     red_won = True  # Assumes red has won unless proven otherwise
@@ -36,7 +36,7 @@ def evaluation(current_position, max_player, bench):
                         if current_position[move[0]][move[1]] != 0:
                             if current_position[move[0]][move[1]].type == (0, 1) and current_position[move[0]][
                                 move[1]].side != max_player:
-                                total_value += 20  # Bonus for threatening enemy 0-1
+                                total_value += 15  # Bonus for threatening enemy 0-1
                     # Combines piece value and positional heatmap for scoring
                     total_value += piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
 
@@ -48,7 +48,7 @@ def evaluation(current_position, max_player, bench):
                         if current_position[move[0]][move[1]] != 0:
                             if current_position[move[0]][move[1]].type == (0, 1) and current_position[move[0]][
                                 move[1]].side == max_player:
-                                total_value -= 20  # Penalty for opponent threatening max's 0-1
+                                total_value -= 15  # Penalty for opponent threatening max's 0-1
                     total_value -= piece_value.get(current_position[line][piece].type) * board_heat_map[line][piece]
 
 

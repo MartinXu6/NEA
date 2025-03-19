@@ -26,10 +26,9 @@ class start_menu:
         self.quit = Button(self.menu, text="QUIT", bg="grey", height="7", width="20", command=quit)
 
         # Add buttons to window
-        self.single_p.pack()
-        self.multi.pack()
-        self.online.pack()
-        self.quit.pack()
+        self.single_p.place(y=110, relx=0.5, anchor=CENTER)
+        self.multi.place(y=250, relx=0.5, anchor= CENTER)
+        self.quit.place(y=390, relx=0.5, anchor=CENTER)
 
         # Tracks active game mode (False = no mode selected)
         self.running = False
@@ -61,8 +60,8 @@ class Choosing:
         self.blue = Button(self.choosing, text="Blue", bg="blue", height="7", width="20", command=self.blue)  # Button for choosing Blue.
         Side = ""
         self.choice.pack()
-        self.red.pack()
-        self.blue.pack()
+        self.red.place(y=100, relx=0.5, anchor=CENTER)
+        self.blue.place(y=250, relx=0.5, anchor=CENTER)
         self.choosing.mainloop()  # Start the Tkinter event loop.
 
     # Handle selection of the red side.
