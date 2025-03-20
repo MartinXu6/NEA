@@ -23,7 +23,7 @@ class start_menu:
         # Online Play button (yellow) - triggers online() method
         self.online = Button(self.menu, text="Play Online", bg="yellow", height="7", width="20", command=self.online)
         # Quit button (grey) - exits application
-        self.quit = Button(self.menu, text="QUIT", bg="grey", height="7", width="20", command=quit)
+        self.quit = Button(self.menu, text="QUIT", bg="grey", height="7", width="20", command=exit)
 
         # Add buttons to window
         self.single_p.place(y=110, relx=0.5, anchor=CENTER)

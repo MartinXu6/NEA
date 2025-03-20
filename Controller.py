@@ -1008,7 +1008,7 @@ def single_player_blue():
                 gui.evaluation_blue.config(width=395 * blue_width)
                 gui.moves.configure(state="normal")
                 gui.moves.insert(INSERT,
-                                 f"\n{Game.current_move[0][0]} {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
+                                 f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                 gui.moves.configure(state="disable")
                 Game.current_move = []
             # red move cycle
@@ -1173,12 +1173,8 @@ def single_player_blue():
                 gui.evaluation_red.config(width=395 * red_width)
                 gui.evaluation_blue.config(width=395 * blue_width)
                 gui.moves.configure(state="normal")
-                if Game.current_move[0] == "red":
-                    gui.moves.insert(INSERT,
+                gui.moves.insert(INSERT,
                                      f"\nb {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
-                else:
-                    gui.moves.insert(INSERT,
-                                     f"\nr {Game.current_move[1]} {Game.current_move[2]} --->{Game.current_move[3]}")
                 gui.moves.configure(state="disable")
                 Game.current_move = []
 
